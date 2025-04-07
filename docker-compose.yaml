@@ -1,0 +1,16 @@
+services:
+  mongodb:
+    image: mongo:8.0.6
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: nexusfc
+      MONGO_INITDB_ROOT_PASSWORD: nexusfc123
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./init-nexusFC-schema.js:/docker-entrypoint-initdb.d/init-nexusFC-schema.js
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
