@@ -1,0 +1,214 @@
+{
+  "cargoquery": [
+    {
+      "title": {
+        "Link": "Faker",
+        "Team": "KT Rolster",
+        "Champion": "Viktor",
+        "Kills": "2",
+        "Deaths": "2",
+        "Assists": "5",
+        "Gold": "11685",
+        "CS": "270",
+        "IngameRole": "Mid",
+        "DamageToChampions": "16800",
+        "StandardName": "LCK 2025 Rounds 1-2",
+        "PlayerWin": "Yes",
+        "GameId": "LCK/2025 Season/Rounds 1-2_Week 2_4_2",
+        "DateTime UTC": "2025-04-10 11:20:00",
+        "Patch": "25.07",
+        "VOD": null,
+        "DateTime UTC__precision": "0"
+      }
+    },
+    {
+      "title": {
+        "Link": "Faker",
+        "Team": "KT Rolster",
+        "Champion": "Ahri",
+        "Kills": "1",
+        "Deaths": "2",
+        "Assists": "10",
+        "Gold": "9871",
+        "CS": "218",
+        "IngameRole": "Mid",
+        "DamageToChampions": "13837",
+        "StandardName": "LCK 2025 Rounds 1-2",
+        "PlayerWin": "Yes",
+        "GameId": "LCK/2025 Season/Rounds 1-2_Week 2_4_1",
+        "DateTime UTC": "2025-04-10 10:33:00",
+        "Patch": "25.07",
+        "VOD": null,
+        "DateTime UTC__precision": "0"
+      }
+    },
+    {
+      "title": {
+        "Link": "Faker",
+        "Team": "Gen.G",
+        "Champion": "Taliyah",
+        "Kills": "3",
+        "Deaths": "4",
+        "Assists": "5",
+        "Gold": "19453",
+        "CS": "445",
+        "IngameRole": "Mid",
+        "DamageToChampions": "42563",
+        "StandardName": "LCK 2025 Rounds 1-2",
+        "PlayerWin": "No",
+        "GameId": "LCK/2025 Season/Rounds 1-2_Week 1_10_3",
+        "DateTime UTC": "2025-04-06 10:34:00",
+        "Patch": "25.06",
+        "VOD": "https://www.youtube.com/live/uJKe2YyQp8U?t=17791",
+        "DateTime UTC__precision": "0"
+      }
+    },
+    {
+      "title": {
+        "Link": "Faker",
+        "Team": "Gen.G",
+        "Champion": "Ryze",
+        "Kills": "5",
+        "Deaths": "4",
+        "Assists": "7",
+        "Gold": "16375",
+        "CS": "309",
+        "IngameRole": "Mid",
+        "DamageToChampions": "35236",
+        "StandardName": "LCK 2025 Rounds 1-2",
+        "PlayerWin": "No",
+        "GameId": "LCK/2025 Season/Rounds 1-2_Week 1_10_2",
+        "DateTime UTC": "2025-04-06 09:30:00",
+        "Patch": "25.06",
+        "VOD": "https://www.youtube.com/live/uJKe2YyQp8U?t=13914",
+        "DateTime UTC__precision": "0"
+      }
+    },
+    {
+      "title": {
+        "Link": "Faker",
+        "Team": "Gen.G",
+        "Champion": "Ahri",
+        "Kills": "9",
+        "Deaths": "1",
+        "Assists": "10",
+        "Gold": "15789",
+        "CS": "298",
+        "IngameRole": "Mid",
+        "DamageToChampions": "28794",
+        "StandardName": "LCK 2025 Rounds 1-2",
+        "PlayerWin": "Yes",
+        "GameId": "LCK/2025 Season/Rounds 1-2_Week 1_10_1",
+        "DateTime UTC": "2025-04-06 08:30:00",
+        "Patch": "25.06",
+        "VOD": "https://www.youtube.com/live/uJKe2YyQp8U?t=10403",
+        "DateTime UTC__precision": "0"
+      }
+    },
+    {
+      "title": {
+        "Link": "Faker",
+        "Team": "DRX",
+        "Champion": "Sylas",
+        "Kills": "3",
+        "Deaths": "3",
+        "Assists": "7",
+        "Gold": "13276",
+        "CS": "284",
+        "IngameRole": "Mid",
+        "DamageToChampions": "28607",
+        "StandardName": "LCK 2025 Rounds 1-2",
+        "PlayerWin": "Yes",
+        "GameId": "LCK/2025 Season/Rounds 1-2_Week 1_6_2",
+        "DateTime UTC": "2025-04-04 12:17:00",
+        "Patch": "25.06",
+        "VOD": "https://www.youtube.com/live/71VW4iiW84E?si=VbksmJoofj1h5L5Q&amp;t=16807",
+        "DateTime UTC__precision": "0"
+      }
+    },
+    {
+      "title": {
+        "Link": "Faker",
+        "Team": "DRX",
+        "Champion": "Azir",
+        "Kills": "4",
+        "Deaths": "1",
+        "Assists": "13",
+        "Gold": "15632",
+        "CS": "309",
+        "IngameRole": "Mid",
+        "DamageToChampions": "30768",
+        "StandardName": "LCK 2025 Rounds 1-2",
+        "PlayerWin": "Yes",
+        "GameId": "LCK/2025 Season/Rounds 1-2_Week 1_6_1",
+        "DateTime UTC": "2025-04-04 11:22:00",
+        "Patch": "25.06",
+        "VOD": "https://www.youtube.com/live/71VW4iiW84E?si=6nX4pil9LwHSqwki&amp;t=13507",
+        "DateTime UTC__precision": "0"
+      }
+    },
+    {
+      "title": {
+        "Link": "Faker",
+        "Team": "Hanwha Life Esports",
+        "Champion": "Zoe",
+        "Kills": "3",
+        "Deaths": "2",
+        "Assists": "6",
+        "Gold": "16139",
+        "CS": "356",
+        "IngameRole": "Mid",
+        "DamageToChampions": "24897",
+        "StandardName": "LCK Cup 2025",
+        "PlayerWin": "No",
+        "GameId": "LCK/2025 Season/Cup_Playoffs Round 1_2_5",
+        "DateTime UTC": "2025-02-13 11:40:00",
+        "Patch": "25.S1.3",
+        "VOD": "https://www.youtube.com/live/80HsnyZGDPo?t=14810",
+        "DateTime UTC__precision": "0"
+      }
+    },
+    {
+      "title": {
+        "Link": "Faker",
+        "Team": "Hanwha Life Esports",
+        "Champion": "Ahri",
+        "Kills": "4",
+        "Deaths": "3",
+        "Assists": "12",
+        "Gold": "16010",
+        "CS": "296",
+        "IngameRole": "Mid",
+        "DamageToChampions": "28450",
+        "StandardName": "LCK Cup 2025",
+        "PlayerWin": "Yes",
+        "GameId": "LCK/2025 Season/Cup_Playoffs Round 1_2_4",
+        "DateTime UTC": "2025-02-13 10:41:00",
+        "Patch": "25.S1.3",
+        "VOD": "https://www.youtube.com/live/80HsnyZGDPo?t=11305",
+        "DateTime UTC__precision": "0"
+      }
+    },
+    {
+      "title": {
+        "Link": "Faker",
+        "Team": "Hanwha Life Esports",
+        "Champion": "Mel",
+        "Kills": "2",
+        "Deaths": "3",
+        "Assists": "2",
+        "Gold": "11435",
+        "CS": "258",
+        "IngameRole": "Mid",
+        "DamageToChampions": "19624",
+        "StandardName": "LCK Cup 2025",
+        "PlayerWin": "No",
+        "GameId": "LCK/2025 Season/Cup_Playoffs Round 1_2_3",
+        "DateTime UTC": "2025-02-13 09:46:00",
+        "Patch": "25.S1.3",
+        "VOD": "https://www.youtube.com/live/80HsnyZGDPo?t=8018",
+        "DateTime UTC__precision": "0"
+      }
+    }
+  ]
+}
