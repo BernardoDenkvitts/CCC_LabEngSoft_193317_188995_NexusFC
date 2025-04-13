@@ -1,6 +1,5 @@
 package com.nexusfc.api.AI;
 
-import com.nexusfc.api.AI.Response.GeminiResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

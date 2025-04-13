@@ -1,4 +1,4 @@
-package com.nexusfc.api.AI.Response;
+package com.nexusfc.api.AI;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
