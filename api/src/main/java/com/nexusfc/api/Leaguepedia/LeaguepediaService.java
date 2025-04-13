@@ -1,12 +1,10 @@
 package com.nexusfc.api.Leaguepedia;
 
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.Year;
 
 @Service
@@ -19,7 +17,7 @@ public class LeaguepediaService {
         this.restTemplate = restTemplate;
     }
 
-    public PlayerHistoryResponse fetchPlayerHistory(String nick) throws URISyntaxException {
+    public PlayerHistoryResponse fetchPlayerHistory(String nick) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(baseUrl)
                 .queryParam("action", "cargoquery")
                 .queryParam("format", "json")
@@ -30,11 +28,24 @@ public class LeaguepediaService {
                 .queryParam("order_by", "SG.DateTime_UTC DESC")
                 .queryParam("limit", "10");
 
-        String url = builder.toUriString();
-        System.out.println("URL (construída): " + url);
-        URI uri = new URI(url);
+        URI uri = builder.build().toUri();
 
         return this.restTemplate.getForObject(uri, PlayerHistoryResponse.class);
     }
 
+    public TournamentTeamsPlayersResponse fetchTournamentTeamsAndPlayers() {
+        String baseUrl = "https://lol.fandom.com/api.php";
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(baseUrl)
+                .queryParam("action", "cargoquery")
+                .queryParam("format", "json")
+                .queryParam("tables", "TournamentRosters=TR")
+                .queryParam("fields", "TR.Team=TeamName,TR.RosterLinks=PlayerNames")
+                .queryParam("where", "TR.Tournament LIKE '%LCK Cup " + Year.now() + "%'")
+                .queryParam("limit", 20);
+
+        URI uri = builder.build().toUri();
+
+        return restTemplate.getForObject(uri, TournamentTeamsPlayersResponse.class);
+    }
 }
