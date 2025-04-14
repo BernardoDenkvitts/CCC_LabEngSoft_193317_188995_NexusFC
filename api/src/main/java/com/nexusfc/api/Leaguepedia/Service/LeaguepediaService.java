@@ -1,5 +1,7 @@
-package com.nexusfc.api.Leaguepedia;
+package com.nexusfc.api.Leaguepedia.Service;
 
+import com.nexusfc.api.Leaguepedia.Response.PlayerHistoryResponse;
+import com.nexusfc.api.Leaguepedia.Response.TournamentTeamsPlayersResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
