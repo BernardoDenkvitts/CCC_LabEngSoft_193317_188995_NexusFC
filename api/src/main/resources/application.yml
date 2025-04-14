@@ -1,6 +1,12 @@
 spring:
   application:
     name: api
+  data:
+    mongodb:
+      uri: mongodb://nexusfc:nexusfc123@localhost:27017/
+      database: nexusfc
+      auto-index-creation: false
+
 
 gemini:
   api:

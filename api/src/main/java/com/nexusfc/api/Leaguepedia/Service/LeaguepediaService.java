@@ -46,6 +46,6 @@ public class LeaguepediaService {
 
         URI uri = builder.build().toUri();
 
-        return restTemplate.getForObject(uri, TournamentTeamsPlayersResponse.class);
+        return this.restTemplate.getForObject(uri, TournamentTeamsPlayersResponse.class);
     }
 }
