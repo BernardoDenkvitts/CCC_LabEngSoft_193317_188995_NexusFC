@@ -49,19 +49,19 @@ db.createCollection("ProfessionalPlayers", {
                 "bsonType": "string"
               },
               "kills": {
-                "bsonType": "string"
+                "bsonType": "int"
               },
               "deaths": {
-                "bsonType": "string"
+                "bsonType": "int"
               },
               "assists": {
-                "bsonType": "string"
+                "bsonType": "int"
               },
               "gold": {
-                "bsonType": "string"
+                "bsonType": "double"
               },
               "cs": {
-                "bsonType": "string"
+                "bsonType": "int"
               },
               "win": {
                 "bsonType": "bool"
@@ -76,19 +76,19 @@ db.createCollection("ProfessionalPlayers", {
           }
         },
         "overall_kill": {
-          "bsonType": "decimal"
+          "bsonType": "double"
         },
         "overall_death": {
-          "bsonType": "decimal"
+          "bsonType": "double"
         },
         "overall_assist": {
-          "bsonType": "decimal"
+          "bsonType": "double"
         },
         "overall_win_rate": {
-          "bsonType": "decimal"
+          "bsonType": "double"
         },
         "cost": {
-          "bsonType": "decimal"
+          "bsonType": "double"
         }
       }
     }
@@ -117,7 +117,7 @@ db.createCollection("Simulations", {
           "enum": ["REQUESTED", "DENIED", "COMPLETED"]
         },
         "bet_value": {
-          "bsonType": "decimal"
+          "bsonType": "double"
         },
         "created_at": {
           "bsonType": "date"
@@ -167,7 +167,7 @@ db.createCollection("Users", {
           "bsonType": "date"
         },
         "coins": {
-          "bsonType": "decimal"
+          "bsonType": "double"
         }
       }
     }
@@ -220,7 +220,7 @@ db.createCollection("Transactions", {
       "required": ["user_id"],
       "properties": {
         "amount": {
-          "bsonType": "decimal"
+          "bsonType": "double"
         },
         "status": {
           "enum": ["COMPLETED", "FAILED"]
