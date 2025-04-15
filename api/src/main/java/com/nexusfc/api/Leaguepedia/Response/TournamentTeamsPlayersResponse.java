@@ -1,27 +1,11 @@
 package com.nexusfc.api.Leaguepedia.Response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-public class TournamentTeamsPlayersResponse {
-    @JsonProperty("cargoquery")
-    private List<CargoQueryResult> cargoquery;
-
+public class TournamentTeamsPlayersResponse extends CargoQueryResponse<TournamentTeamsPlayersResponse.TournamentTeamPlayerTitle> {
     @Data
-    public static class CargoQueryResult {
-        @JsonProperty("title")
-        private Title title;
-    }
-
-    @Data
-    public static class Title {
+    public static class TournamentTeamPlayerTitle {
         @JsonProperty("TeamName")
         private String teamName;
         @JsonProperty("PlayerNames")

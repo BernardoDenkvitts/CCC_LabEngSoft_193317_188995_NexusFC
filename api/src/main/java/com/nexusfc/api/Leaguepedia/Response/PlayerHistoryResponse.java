@@ -1,28 +1,11 @@
 package com.nexusfc.api.Leaguepedia.Response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-public class PlayerHistoryResponse {
-    @JsonProperty("cargoquery")
-    private List<CargoQueryResult> cargoquery;
-
+public class PlayerHistoryResponse extends CargoQueryResponse<PlayerHistoryResponse.PlayerHistoryTitle> {
     @Data
-    public static class CargoQueryResult {
-        @JsonProperty("title")
-        private Title title;
-    }
-
-    @Data
-    public static class Title {
+    public static class PlayerHistoryTitle {
         @JsonProperty("Link")
         private String link;
         @JsonProperty("Team")
@@ -30,19 +13,19 @@ public class PlayerHistoryResponse {
         @JsonProperty("Champion")
         private String champion;
         @JsonProperty("Kills")
-        private String kills;
+        private Integer kills;
         @JsonProperty("Deaths")
-        private String deaths;
+        private Integer deaths;
         @JsonProperty("Assists")
-        private String assists;
+        private Integer assists;
         @JsonProperty("Gold")
-        private String gold;
+        private Integer gold;
         @JsonProperty("CS")
-        private String cs;
+        private Integer cs;
         @JsonProperty("IngameRole")
         private String ingameRole;
         @JsonProperty("DamageToChampions")
-        private String damageToChampions;
+        private Integer damageToChampions;
         @JsonProperty("StandardName")
         private String standardName;
         @JsonProperty("PlayerWin")
@@ -58,4 +41,19 @@ public class PlayerHistoryResponse {
         @JsonProperty("DateTime UTC__precision")
         private String dateTimeUTCPrecision;
     }
+
+//    public static MatchHistory toMatchHistory(PlayerHistoryResponse.Title data) {
+//        return new MatchHistory(
+//                data.getVersus(),
+//                data.getChampion(),
+//                data.getKills(),
+//                data.getDeaths(),
+//                data.getAssists(),
+//                data.getGold(),
+//                data.getCs(),
+//                data.getPlayerWin() == "Yes" ? true : false,
+//                data.getVod(),
+//                data.getStandardName()
+//        );
+//    }
 }
