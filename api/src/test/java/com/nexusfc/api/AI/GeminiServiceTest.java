@@ -1,18 +1,15 @@
 package com.nexusfc.api.AI;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nexusfc.api.AI.Response.GeminiResponse;
+import com.nexusfc.api.FakeResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -32,10 +29,7 @@ public class GeminiServiceTest {
 
     @Test
     void shouldDecideAWinner() throws IOException {
-        ClassPathResource resource = new ClassPathResource("fixtures/gemini-response.json");
-        InputStream inputStream = resource.getInputStream();
-        ObjectMapper mapper = new ObjectMapper();
-        GeminiResponse fakeResponse = mapper.readValue(inputStream, GeminiResponse.class);
+        GeminiResponse fakeResponse = FakeResponse.create("fixtures/gemini-response.json", GeminiResponse.class);
 
         when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(GeminiResponse.class))).thenReturn(fakeResponse);
 
