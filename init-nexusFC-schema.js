@@ -87,8 +87,20 @@ db.createCollection("ProfessionalPlayers", {
         "overall_win_rate": {
           "bsonType": "double"
         },
+        "overall_damage": {
+          "bsonType": "double"
+        },
+        "overall_gold": {
+          "bsonType": "double"
+        },
+        "overall_cs": {
+          "bsonType": "double"
+        },
         "cost": {
           "bsonType": "double"
+        },
+        "image_url": {
+          "bsonType": "string"
         }
       }
     }
