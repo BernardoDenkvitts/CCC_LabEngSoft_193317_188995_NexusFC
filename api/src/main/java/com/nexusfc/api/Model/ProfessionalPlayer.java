@@ -40,9 +40,22 @@ public class ProfessionalPlayer {
     @Field("overall_assist")
     private Float overallAssist;
 
+    @Field("overall_damage")
+    private Float overallDamage;
+
+    @Field("overall_gold")
+    private Float overallGold;
+
+    @Field("overall_cs")
+    private Float overallCs;
+
     @Field("overall_win_rate")
     private Float overallWinRate;
 
     @Field("cost")
     private Float cost;
+
+    @Field("image_url")
+    private String imageUrl;
+
 }
