@@ -14,7 +14,7 @@ public class MatchHistory {
     private Integer kills;
     private Integer deaths;
     private Integer assists;
-    private Float gold;
+    private Integer gold;
     private Integer cs;
     private Boolean win;
     private String vod;

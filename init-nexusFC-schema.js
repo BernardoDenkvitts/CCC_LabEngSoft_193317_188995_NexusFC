@@ -58,7 +58,7 @@ db.createCollection("ProfessionalPlayers", {
                 "bsonType": "int"
               },
               "gold": {
-                "bsonType": "double"
+                "bsonType": "int"
               },
               "cs": {
                 "bsonType": "int"
