@@ -1,16 +1,18 @@
 package com.nexusfc.api.Leaguepedia;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nexusfc.api.FakeResponse;
+import com.nexusfc.api.Leaguepedia.Response.PlayerFileNameResponse;
+import com.nexusfc.api.Leaguepedia.Response.PlayerHistoryResponse;
+import com.nexusfc.api.Leaguepedia.Response.TournamentTeamsPlayersResponse;
+import com.nexusfc.api.Leaguepedia.Service.LeaguepediaService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,10 +31,7 @@ public class LeaguepediaServiceTest {
 
     @Test
     public void shouldFetchPlayerHistory() throws URISyntaxException, IOException {
-        ClassPathResource resource = new ClassPathResource("fixtures/leaguepedia-player-history-response.json");
-        InputStream inputStream = resource.getInputStream();
-        ObjectMapper mapper = new ObjectMapper();
-        PlayerHistoryResponse fakeResponse = mapper.readValue(inputStream, PlayerHistoryResponse.class);
+        PlayerHistoryResponse fakeResponse = FakeResponse.create("fixtures/leaguepedia-player-history-response.json", PlayerHistoryResponse.class);
 
         when(restTemplate.getForObject(any(), eq(PlayerHistoryResponse.class))).thenReturn(fakeResponse);
 
@@ -47,11 +46,8 @@ public class LeaguepediaServiceTest {
     }
 
     @Test
-    public void shouldFetchTournamentTeamsAndPlayers() throws URISyntaxException, IOException {
-        ClassPathResource resource = new ClassPathResource("fixtures/leaguepedia-tournament-team-and-players-response.json");
-        InputStream inputStream = resource.getInputStream();
-        ObjectMapper mapper = new ObjectMapper();
-        TournamentTeamsPlayersResponse fakeResponse = mapper.readValue(inputStream, TournamentTeamsPlayersResponse.class);
+    public void shouldFetchTournamentTeamsAndPlayers() throws IOException {
+        TournamentTeamsPlayersResponse fakeResponse = FakeResponse.create("fixtures/leaguepedia-tournament-team-and-players-response.json", TournamentTeamsPlayersResponse.class);
 
         when(restTemplate.getForObject(any(), eq(TournamentTeamsPlayersResponse.class))).thenReturn(fakeResponse);
 
@@ -60,6 +56,18 @@ public class LeaguepediaServiceTest {
         assertThat(response).isNotNull();
         assertThat(response.getCargoquery().getFirst().getTitle().getTeamName()).isEqualTo("BNK FEARX");
         assertThat(response.getCargoquery().getFirst().getTitle().getPlayerNames()).isEqualTo("Clear (Song Hyeon-min);;Raptor (Jeon Eo-jin);;VicLa;;Diable;;Kellin;;Ryu;;Joker (Cho Jae-eup)");
+    }
+
+    @Test
+    public void shouldReturnPlayerImageUrl() throws URISyntaxException, IOException {
+        PlayerFileNameResponse fakeResponse = FakeResponse.create("fixtures/leaguepedia-player-filename-response.json", PlayerFileNameResponse.class);
+
+        when(restTemplate.getForObject(any(), eq(PlayerFileNameResponse.class))).thenReturn(fakeResponse);
+
+        String imageUrl = service.playerImageUrl("Raptor (Jeon Eo-jin)");
+
+        assertThat(imageUrl).isNotEmpty();
+        assertThat(imageUrl).isEqualTo("https://lol.fandom.com/wiki/Special:Redirect/file/BFX_Raptor_2025_Split_1.png");
     }
 
 }

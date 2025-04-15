@@ -1,5 +1,6 @@
 package com.nexusfc.api.Leaguepedia.Service;
 
+import com.nexusfc.api.Leaguepedia.Response.PlayerFileNameResponse;
 import com.nexusfc.api.Leaguepedia.Response.PlayerHistoryResponse;
 import com.nexusfc.api.Leaguepedia.Response.TournamentTeamsPlayersResponse;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ public class LeaguepediaService {
 
     private final RestTemplate restTemplate;
     private final static String baseUrl = "https://lol.fandom.com/api.php";
+    private final static  String playerBaseImageUrl = "https://lol.fandom.com/wiki/Special:Redirect/file/";
+
 
     public LeaguepediaService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -49,5 +52,27 @@ public class LeaguepediaService {
         URI uri = builder.build().toUri();
 
         return this.restTemplate.getForObject(uri, TournamentTeamsPlayersResponse.class);
+    }
+
+    public String playerImageUrl(String nick) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(baseUrl)
+                .queryParam("action", "cargoquery")
+                .queryParam("format", "json")
+                .queryParam("tables", "PlayerImages=PI,Tournaments=T")
+                .queryParam("fields", "PI.FileName")
+                .queryParam("where", "PI.Link='" + nick + "'")
+                .queryParam("join_on", "T.OverviewPage=PI.Tournament")
+                .queryParam("order_by", "PI.SortDate DESC,T.DateStart DESC")
+                .queryParam("limit", 1);
+
+        URI uri = builder.build().toUri();
+        PlayerFileNameResponse playerFileNameResponse = this.restTemplate.getForObject(uri, PlayerFileNameResponse.class);
+        if (playerFileNameResponse == null || playerFileNameResponse.getCargoquery().isEmpty()) {
+            return "";
+        }
+
+        String fileName = playerFileNameResponse.getCargoquery().getFirst().getTitle().getFileName().replace(" ", "_");
+
+        return playerBaseImageUrl + fileName;
     }
 }
