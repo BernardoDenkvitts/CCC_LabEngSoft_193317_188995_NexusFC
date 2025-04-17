@@ -69,9 +69,8 @@ public class SyncService {
         if (player == null) {
             player = new ProfessionalPlayer();
             player.setNick(playerNick);
-        } else {
-            return;
         }
+
         updatePlayerData(player, historyResponse, stats, team);
 
         Thread.sleep(IMAGE_FETCH_DELAY);
