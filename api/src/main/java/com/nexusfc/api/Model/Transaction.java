@@ -4,6 +4,7 @@ import com.nexusfc.api.Model.Enum.TransactionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -29,5 +30,5 @@ public class Transaction {
     private Instant createdAt;
 
     @Field("user_id")
-    private String userId;
+    private ObjectId userId;
 }

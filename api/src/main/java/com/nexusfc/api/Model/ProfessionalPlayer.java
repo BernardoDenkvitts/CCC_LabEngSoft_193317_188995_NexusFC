@@ -5,6 +5,7 @@ import com.nexusfc.api.Model.Enum.Lane;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -26,7 +27,7 @@ public class ProfessionalPlayer {
     private Lane lane;
 
     @Field("team")
-    private String teamId;
+    private ObjectId team;
 
     @Field("match_history")
     private List<MatchHistory> matchHistory;

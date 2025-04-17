@@ -4,6 +4,7 @@ import com.nexusfc.api.Model.Enum.SimulationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -23,10 +24,10 @@ public class Simulation {
     private String versusPlayer;
 
     @Field("desafiante_id")
-    private String desafianteId;
+    private ObjectId desafianteId;
 
     @Field("desafiado_id")
-    private String desafiadoId;
+    private ObjectId desafiadoId;
 
     @Field("status")
     private SimulationStatus status;
