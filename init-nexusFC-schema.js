@@ -175,7 +175,7 @@ db.createCollection("Users", {
         "created_at": {
           "bsonType": "date"
         },
-        "last_login": {
+        "last_rewarded_login": {
           "bsonType": "date"
         },
         "coins": {
