@@ -7,6 +7,10 @@ spring:
       database: nexusfc
       auto-index-creation: false
 
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:nexusfc-secret}
 
 gemini:
   api:

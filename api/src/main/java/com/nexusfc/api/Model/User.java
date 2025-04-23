@@ -6,14 +6,20 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.Duration;
 import java.time.Instant;
+import java.util.Collection;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "Users")
-public class User {
+public class User implements UserDetails {
     @Id
     private String id;
 
@@ -27,11 +33,44 @@ public class User {
     private String password;
 
     @Field("created_at")
-    private Instant createdAt;
+    private Instant createdAt = Instant.now();
 
-    @Field("last_login")
-    private Instant lastLogin;
+    @Field("last_rewarded_login")
+    private Instant lastRewardedLogin;
 
     @Field("coins")
-    private Float coins;
+    private Float coins = 0f;
+
+    public void addCoins(Float coins) {
+        this.coins += coins;
+    }
+
+    public void decreaseCoins(Float coins) {
+        this.coins -= coins;
+    }
+
+    public boolean isFirstDailyLogin() {
+        if (lastRewardedLogin == null || Duration.between(lastRewardedLogin, Instant.now()).toHours() >= 24) {
+            lastRewardedLogin = Instant.now();
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
 }
