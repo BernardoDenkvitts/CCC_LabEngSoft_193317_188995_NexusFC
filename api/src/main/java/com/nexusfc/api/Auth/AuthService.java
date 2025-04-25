@@ -1,5 +1,7 @@
 package com.nexusfc.api.Auth;
 
+import com.nexusfc.api.Model.UserTeam;
+import com.nexusfc.api.Repository.UserTeamsRepository;
 import com.nexusfc.api.Security.TokenService;
 import org.springframework.context.ApplicationContext;
 import com.nexusfc.api.Auth.Dto.CredentialsDTO;
@@ -13,7 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,11 +27,15 @@ public class AuthService implements UserDetailsService {
     private ApplicationContext applicationContext;
     private final TokenService tokenService;
     private final UserRepository userRepository;
+    private final UserTeamsRepository userTeamsRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthService(ApplicationContext applicationContext, TokenService tokenService, UserRepository userRepository) {
+    public AuthService(ApplicationContext applicationContext, TokenService tokenService, UserRepository userRepository, UserTeamsRepository userTeamsRepository, PasswordEncoder passwordEncoder) {
         this.applicationContext = applicationContext;
         this.tokenService = tokenService;
         this.userRepository = userRepository;
+        this.userTeamsRepository = userTeamsRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -37,13 +43,11 @@ public class AuthService implements UserDetailsService {
         if (userRepository.findByEmail(dto.getEmail()) != null)
             throw new EmailAlreadyInUseException();
 
-        User user = new User();
-        user.setName(dto.getName());
-        user.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
-        user.setEmail(dto.getEmail());
-        user.addCoins(120f);
+        User user = userRepository.save(new User(dto.getEmail(), dto.getName(), passwordEncoder.encode(dto.getPassword())));
 
-        return userRepository.save(user);
+        userTeamsRepository.save(new UserTeam(user.getId()));
+
+        return user;
     }
 
     @Transactional

@@ -28,5 +28,10 @@ public class UserTeam {
 
     @Field("professional_players")
     private List<ProfessionalPlayerEntry> professionalPlayers;
+
+    public UserTeam(String userId) {
+        this.userId = new ObjectId(userId);
+    }
+
 }
 

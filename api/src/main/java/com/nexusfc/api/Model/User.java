@@ -39,7 +39,13 @@ public class User implements UserDetails {
     private Instant lastRewardedLogin;
 
     @Field("coins")
-    private Float coins = 0f;
+    private Float coins = 120f;
+
+    public User(String email, String name, String password) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+    }
 
     public void addCoins(Float coins) {
         this.coins += coins;
