@@ -32,6 +32,7 @@ db.createCollection("ProfessionalPlayers", {
           "bsonType": "string"
         },
         "lane": {
+          "bsonType": "string",
           "enum": ["TOP", "JUNGLE", "MID", "ADC", "SUP"]
         },
         "team": {

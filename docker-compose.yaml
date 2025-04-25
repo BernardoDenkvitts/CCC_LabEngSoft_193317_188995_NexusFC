@@ -2,15 +2,36 @@ services:
   mongodb:
     image: mongo:8.0.6
     container_name: mongodb
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: nexusfc
-      MONGO_INITDB_ROOT_PASSWORD: nexusfc123
     ports:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
-      - ./init-nexusFC-schema.js:/docker-entrypoint-initdb.d/init-nexusFC-schema.js
+    command: mongod --replSet rs0 --bind_ip_all
     restart: unless-stopped
+
+  init-replica:
+    image: mongo:8.0.6
+    depends_on:
+      - mongodb
+    volumes:
+      - ./init-nexusFC-schema.js:/init-nexusFC-schema.js
+    entrypoint: >
+      bash -c "
+        echo 'Aguardando MongoDB subir...' &&
+        sleep 5 &&
+        until mongosh --host mongodb --eval 'db.runCommand({ ping: 1 })'; do
+          echo 'Esperando conexão com MongoDB...';
+          sleep 2;
+        done &&
+
+        echo 'Iniciando replica set...' &&
+        mongosh --host mongodb --eval 'rs.initiate()' || true &&
+
+        echo 'Executando script de inicialização...' &&
+        mongosh --host mongodb /init-nexusFC-schema.js &&
+        echo 'Script concluído!'
+      "
+    restart: "no"
 
 volumes:
   mongodb_data:
