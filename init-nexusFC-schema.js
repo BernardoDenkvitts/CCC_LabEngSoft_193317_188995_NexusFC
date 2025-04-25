@@ -20,7 +20,7 @@ db.createCollection("ProfessionalTeams", {
   },
   "autoIndexId": true
 });
-db.ProfessionalTeams.createIndex({"name": "text"}, {unique: true})
+db.ProfessionalTeams.createIndex({"name": 1}, {unique: true})
 
 db.createCollection("ProfessionalPlayers", {
   validator: {
@@ -107,7 +107,7 @@ db.createCollection("ProfessionalPlayers", {
   },
   "autoIndexId": true
 });
-db.ProfessionalPlayers.createIndex({"nick": "text"})
+db.ProfessionalPlayers.createIndex({"nick": 1})
 
 db.createCollection("Simulations", {
   validator: {
@@ -186,7 +186,7 @@ db.createCollection("Users", {
   },
   "autoIndexId": true
 });
-db.Users.createIndex({"email": "text"}, {unique: true});
+db.Users.createIndex({"email": 1}, {unique: true});
 
 db.createCollection("UserTeams", {
   validator: {
@@ -222,7 +222,7 @@ db.createCollection("UserTeams", {
   "autoIndexId": true
 });
 db.UserTeams.createIndex({"user_id": 1});
-db.UserTeams.createIndex({"name": "text"}, {unique: true})
+db.UserTeams.createIndex({"name": 1}, {unique: true})
 
 db.createCollection("Transactions", {
   validator: {
