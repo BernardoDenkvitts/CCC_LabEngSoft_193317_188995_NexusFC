@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -27,10 +28,11 @@ public class UserTeam {
     private ObjectId userId;
 
     @Field("professional_players")
-    private List<ProfessionalPlayerEntry> professionalPlayers;
+    private List<ProfessionalPlayerEntry> professionalPlayers = new ArrayList<>();
 
     public UserTeam(String userId) {
         this.userId = new ObjectId(userId);
+        this.name = String.format("UserTeam%s", this.userId.toString().substring(0, 6) + this.userId.toString().substring(this.userId.toString().length() - 6));
     }
 
 }
