@@ -1,6 +1,8 @@
 package com.nexusfc.api.Model;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.nexusfc.api.Model.Component.ProfessionalPlayerEntry;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +27,7 @@ public class UserTeam {
     private String name;
 
     @Field("user_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId userId;
 
     @Field("professional_players")

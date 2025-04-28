@@ -1,6 +1,5 @@
 package com.nexusfc.api.Leaguepedia.Service;
 
-import com.nexusfc.api.Leaguepedia.Response.CargoQueryResponse;
 import com.nexusfc.api.Leaguepedia.Response.PlayerHistoryResponse;
 import com.nexusfc.api.Leaguepedia.Response.TournamentTeamsPlayersResponse;
 import com.nexusfc.api.Model.Component.MatchHistory;
@@ -9,10 +8,8 @@ import com.nexusfc.api.Model.ProfessionalPlayer;
 import com.nexusfc.api.Model.ProfessionalTeam;
 import com.nexusfc.api.Repository.ProfessionalPlayersRepository;
 import com.nexusfc.api.Repository.ProfessionalTeamsRepository;
-import org.bson.types.ObjectId;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.Map;
@@ -43,7 +40,6 @@ public class SyncService {
     }
 
     @Scheduled(cron = "0 0 3 * * MON")
-    @Transactional
     public void updatePlayersData() throws InterruptedException {
         TournamentTeamsPlayersResponse tournamentTeamsPlayersResponse = leaguepediaService.fetchTournamentTeamsAndPlayers();
 
@@ -87,7 +83,7 @@ public class SyncService {
                 .map(match -> MatchHistory.toMatchHistory(match.getTitle()))
                 .collect(Collectors.toList()));
         player.setLane(laneMap.get(historyResponse.getCargoquery().getFirst().getTitle().getIngameRole()));
-        player.setTeam(new ObjectId(team.getId()));
+        player.setTeam(team);
         // TODO - ask Gemini a cost
         player.setCost(0.0f);
         stats.applyToPlayer(player);
