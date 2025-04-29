@@ -29,4 +29,9 @@ public class ProfessionalPlayersController {
         return ResponseEntity.ok(service.getProfessionalPlayers(pageable));
     }
     
+    @GetMapping("/{id}")
+    public ResponseEntity<ProfessionalPlayer> getPlayerById(@RequestParam String id) {
+        return ResponseEntity.ok(service.getProfessionalPlayerById(id));
+    }
+
 }
