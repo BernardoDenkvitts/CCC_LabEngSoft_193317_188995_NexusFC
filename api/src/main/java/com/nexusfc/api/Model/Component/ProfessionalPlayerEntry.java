@@ -18,4 +18,10 @@ public class ProfessionalPlayerEntry {
 
     @Field("is_starter")
     private Boolean isStarter;
+
+    public ProfessionalPlayerEntry(ProfessionalPlayer player) {
+        this.player = player;
+        this.isStarter = false;
+    }
+
 }

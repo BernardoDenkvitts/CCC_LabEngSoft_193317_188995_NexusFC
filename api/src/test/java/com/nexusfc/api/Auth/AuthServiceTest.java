@@ -1,6 +1,5 @@
 package com.nexusfc.api.Auth;
 
-
 import com.nexusfc.api.Auth.Dto.CredentialsDTO;
 import com.nexusfc.api.Auth.Dto.LoginResponseDTO;
 import com.nexusfc.api.Auth.Dto.NewUserDTO;
@@ -60,7 +59,6 @@ public class AuthServiceTest {
         dto.setName("John Doe");
         dto.setEmail("john@gmail.com");
         dto.setPassword("securePassword123");
-        
         User user = getTestUser();
 
         when(userRepository.findByEmail(dto.getEmail())).thenReturn(null);
@@ -111,7 +109,7 @@ public class AuthServiceTest {
 
         LoginResponseDTO loginResponseDTO = authService.login(dto);
 
-        verify(user).addCoins(10f);
+        verify(user).increaseCoins(10f);
         assertEquals("mocked-token", loginResponseDTO.getToken());
     }
 
@@ -126,4 +124,3 @@ public class AuthServiceTest {
     }
 
 }
-

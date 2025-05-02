@@ -47,12 +47,16 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public void addCoins(Float coins) {
+    public void increaseCoins(Float coins) {
         this.coins += coins;
     }
 
     public void decreaseCoins(Float coins) {
         this.coins -= coins;
+    }
+
+    public boolean hasEnoughCoins(Float requiredAmount) {
+        return this.coins >= requiredAmount;
     }
 
     public boolean isFirstDailyLogin() {

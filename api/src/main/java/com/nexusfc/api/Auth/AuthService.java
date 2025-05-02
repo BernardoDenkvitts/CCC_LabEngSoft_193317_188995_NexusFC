@@ -60,7 +60,7 @@ public class AuthService implements UserDetailsService {
 
         User user = (User) auth.getPrincipal();
         if (user.isFirstDailyLogin()) {
-            user.addCoins(10f);
+            user.increaseCoins(10f);
             userRepository.save(user);
         }
 
