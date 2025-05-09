@@ -1,6 +1,5 @@
 package com.nexusfc.api.User.Service;
 
-
 import org.springframework.stereotype.Service;
 
 import com.nexusfc.api.Common.NotFoundException;
@@ -9,7 +8,7 @@ import com.nexusfc.api.Repository.UserRepository;
 
 @Service
 public class UserService {
-    
+
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
@@ -24,7 +23,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User getUserData(String id) {
+    public User find(String id) {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException(notFoundMessage(id)));
     }
 

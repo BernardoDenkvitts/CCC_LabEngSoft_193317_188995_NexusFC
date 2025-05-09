@@ -15,11 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 @RestController
 @RequestMapping("/professional/teams")
 public class ProfessionalTeamsController {
-    
+
     private final ProfessionalTeamsService service;
 
     public ProfessionalTeamsController(ProfessionalTeamsService service) {
@@ -32,10 +31,10 @@ public class ProfessionalTeamsController {
 
         return ResponseEntity.ok(service.getProfessionalTeams(pageable));
     }
-    
-    @GetMapping("/{teamName}")
-    public ResponseEntity<List<ProfessionalPlayer>> getPlayersByTeamName(@RequestParam("teamName") String teamName) {
-        return ResponseEntity.ok(service.getTeamAndPlayers(teamName));
+
+    @GetMapping("/{id}")
+    public ResponseEntity<List<ProfessionalPlayer>> getPlayersByTeamName(@RequestParam("id") String id) {
+        return ResponseEntity.ok(service.getTeamPlayers(id));
     }
 
 }

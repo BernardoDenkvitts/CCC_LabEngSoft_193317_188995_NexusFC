@@ -22,8 +22,8 @@ public class UserTeamService {
         return userTeamsRepository.save(userTeam);
     }
 
-    public UserTeam getUserTeam(String userId) {
-        return Optional.ofNullable(userTeamsRepository.findByUserId(new ObjectId(userId))).orElseThrow(() -> new NotFoundException("User with id " + userId));
+    public UserTeam find(String userId) {
+        return Optional.ofNullable(userTeamsRepository.findByUserId(new ObjectId(userId)))
+                .orElseThrow(() -> new NotFoundException("User with id " + userId));
     }
-
 }

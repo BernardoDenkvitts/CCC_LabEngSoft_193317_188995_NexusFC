@@ -1,8 +1,11 @@
 package com.nexusfc.api.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.nexusfc.api.Model.Component.ProfessionalPlayerEntry;
+import com.nexusfc.api.Model.Enum.Lane;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 @Data
@@ -54,6 +58,26 @@ public class UserTeam {
         return professionalPlayers.stream()
                 .filter(entry -> entry.getPlayer().getId().equals(playerId)).findFirst()
                 .orElse(null);
+    }
+
+    public boolean hasCompleteTeam() {
+        if (professionalPlayers.size() < 5)
+            return false;
+
+        EnumSet<Lane> coveredLanes = EnumSet.noneOf(Lane.class);
+
+        for (ProfessionalPlayerEntry entry : professionalPlayers) {
+            if (entry.getIsStarter()) {
+                coveredLanes.add(entry.getPlayer().getLane());
+            }
+        }
+
+        return coveredLanes.containsAll(EnumSet.allOf(Lane.class));
+    }
+
+    @JsonIgnore
+    public List<ProfessionalPlayerEntry> getStarterPlayers() {
+        return professionalPlayers.stream().filter(entry -> entry.getIsStarter() == true).toList();
     }
 
 }

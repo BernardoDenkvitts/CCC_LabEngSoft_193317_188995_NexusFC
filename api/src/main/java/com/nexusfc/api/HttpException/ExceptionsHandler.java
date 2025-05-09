@@ -15,6 +15,7 @@ import com.nexusfc.api.Common.NotFoundException;
 import com.nexusfc.api.Market.Exception.InsufficientBalance;
 import com.nexusfc.api.Market.Exception.PlayerAlreadyOwnedException;
 import com.nexusfc.api.Market.Exception.PlayerNotInTeamException;
+import com.nexusfc.api.Simulation.Exception.IncompleteTeamException;
 
 @RestControllerAdvice
 public class ExceptionsHandler {
@@ -57,7 +58,7 @@ public class ExceptionsHandler {
         return pd;
     }
 
-    @ExceptionHandler({InsufficientBalance.class, PlayerAlreadyOwnedException.class, PlayerNotInTeamException.class})
+    @ExceptionHandler({InsufficientBalance.class, PlayerAlreadyOwnedException.class, PlayerNotInTeamException.class, IncompleteTeamException.class, })
     public ProblemDetail handleUnprocessableEntityException(RuntimeException ex) {
         ProblemDetail pd = getProblemDetail(HttpStatus.UNPROCESSABLE_ENTITY);
         pd.setTitle("Unprocessable Entity");

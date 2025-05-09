@@ -26,12 +26,12 @@ public class UserController {
 
     @GetMapping("/{id}")
     public UserResponseDTO getUserData(@PathVariable String id) {
-        return UserResponseDTO.fromUserModel(userService.getUserData(id));
+        return UserResponseDTO.fromUserModel(userService.find(id));
     }
 
     @GetMapping("/{id}/team")
     public UserTeam getUserTeam(@PathVariable String id) {
-        return userTeamService.getUserTeam(id);
+        return userTeamService.find(id);
     }
 
 }

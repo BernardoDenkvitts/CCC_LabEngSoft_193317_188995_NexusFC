@@ -4,6 +4,8 @@ import com.nexusfc.api.Model.Enum.SimulationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
@@ -21,31 +23,39 @@ public class Simulation {
     private String id;
 
     @Field("versus_player")
-    private String versusPlayer;
+    private Boolean versusPlayer;
 
     @Field("desafiante_id")
     @DocumentReference
     private User desafiante;
 
     @Field("desafiado_id")
-    @DocumentReference
-    private User desafiado;
+    private ObjectId desafiado;
 
     @Field("status")
-    private SimulationStatus status;
+    private SimulationStatus status = SimulationStatus.REQUESTED;
 
     @Field("bet_value")
     private Float betValue;
 
     @Field("created_at")
-    private Instant createdAt;
+    private Instant createdAt = Instant.now();
 
     @Field("win")
     private Boolean win;
 
     @Field("desafiante_team")
-    private List<String> desafianteTeamId;
+    @DocumentReference
+    private List<ProfessionalPlayer> desafianteTeamPlayers;
 
     @Field("desafiado_team")
-    private List<String> desafiadoTeamId;
+    @DocumentReference
+    private List<ProfessionalPlayer> desafiadoTeamPlayers;
+
+    public Simulation(User challenger, Float betValue, List<ProfessionalPlayer> challengerTeamPlayers, Boolean versusPlayer) {
+        this.desafiante = challenger;
+        this.betValue = betValue;
+        this.desafianteTeamPlayers = challengerTeamPlayers;
+        this.versusPlayer = versusPlayer;
+    }
 }
