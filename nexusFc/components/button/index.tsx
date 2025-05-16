@@ -31,14 +31,17 @@ const Button: FC<PropTypes> = ({
     <TouchableOpacity
       {...props}
       disabled={disabled}
-      style={{
-        borderRadius: 15,
-        padding: 10,
-        backgroundColor: '#6F89FA', //rever isso fixo
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignSelf: 'center',
-      }}
+      style={[
+        {
+          borderRadius: 15,
+          padding: 10,
+          backgroundColor: '#6F89FA', //rever isso fixo
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignSelf: 'center',
+        },
+        props.containerStyle,
+      ]}
     >
       {titleComponent}
       {children}

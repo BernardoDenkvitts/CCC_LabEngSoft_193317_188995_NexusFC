@@ -12,6 +12,7 @@ import {
 import Ionicons from '@expo/vector-icons/Ionicons';
 // import ErrorMessage from '../error-message';
 import InputLabel from './input-label';
+import ErrorMessage from '../error-message';
 
 const Input: FC<InputPropTypes> = ({
   className,
@@ -23,7 +24,6 @@ const Input: FC<InputPropTypes> = ({
   labelClassName,
   labelStyle,
   errorMessage,
-  errorMessageClassName,
   errorMessageStyle,
   loading,
   backgroundColor,
@@ -46,16 +46,31 @@ const Input: FC<InputPropTypes> = ({
           placeholderTextColor="#86939e"
           underlineColorAndroid="transparent"
           {...inputProps}
-          style={style}
-          className={`
-                text-[18px] min-h-10 p-4 rounded-lg ${backgroundColor ?? 'bg-orange-100'}
-                ${className}
-              `}
+          style={[
+            {
+              fontSize: 18,
+              padding: 10,
+              borderRadius: 15,
+              backgroundColor: 'white',
+              minHeight: 15,
+            },
+            style,
+          ]}
           secureTextEntry={
             inputProps?.secureTextEntry ? secureTextEntryEnabled : false
           }
         />
-        <View className="absolute right-0 flex-row items-center h-full pr-4 gap-3">
+        <View
+          style={{
+            position: 'absolute',
+            flexDirection: 'row',
+            alignItems: 'center',
+            height: '100%',
+            gap: 4,
+            right: 0,
+            paddingRight: 5,
+          }}
+        >
           {loading && <ActivityIndicator />}
 
           {inputProps?.secureTextEntry && (
@@ -73,11 +88,7 @@ const Input: FC<InputPropTypes> = ({
           )}
         </View>
       </View>
-      {/* <ErrorMessage
-        message={errorMessage}
-        className={errorMessageClassName}
-        style={errorMessageStyle}
-      /> */}
+      <ErrorMessage message={errorMessage} style={errorMessageStyle} />
     </View>
   );
 };
@@ -92,7 +103,6 @@ export type InputPropTypes = TextInputProps & {
   labelClassName?: string;
   labelStyle?: StyleProp<TextStyle>;
   errorMessage?: string;
-  errorMessageClassName?: string;
   errorMessageStyle?: StyleProp<TextStyle>;
   loading?: boolean;
   backgroundColor?: string;

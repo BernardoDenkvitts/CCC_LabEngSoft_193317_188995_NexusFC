@@ -8,15 +8,11 @@ const InputLabel: FC<InputLabelTypes> = ({
   labelClassName,
 }) => {
   return (
-    <View className="mb-3 flex-row">
+    <View style={{ marginBottom: 3, flexDirection: 'row' }}>
       <Text style={[labelStyle, { fontSize: 16 }]} className={labelClassName}>
         {label}
       </Text>
-      {required && (
-        <Text style={{ fontSize: 16 }} className="text-red-600">
-          {' *'}
-        </Text>
-      )}
+      {required && <Text style={{ fontSize: 16, color: 'red' }}>{' *'}</Text>}
     </View>
   );
 };

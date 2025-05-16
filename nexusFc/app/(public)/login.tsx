@@ -94,36 +94,10 @@ const LoginScreen: FC = () => {
                 paddingHorizontal: 30,
               }}
             >
-              {/* <FormInput
-                label="E-mail"
-                labelStyle={{
-                  fontSize: 16,
-                  padding: 5,
-                  fontWeight: 'bold',
-                  marginBottom: 2,
-                  color: 'white',
-                }}
-                inputStyle={{
-                  color: 'white',
-                  height: 50,
-                  padding: 10,
-                  width: '100%',
-                  backgroundColor: 'white',
-                  borderRadius: 10,
-                  marginBottom: 30,
-                  paddingHorizontal: 10,
-                }}
-                placeholderTextColor={'black'}
-                placeholder="Digite seu email"
-                keyboardType="email-address"
-                textContentType="emailAddress"
-                autoComplete="email"
-                autoCapitalize="none"
-              /> */}
-
               <FormInput
+                containerStyle={{ marginVertical: 10 }}
+                labelStyle={{ color: 'white', marginBottom: 5 }}
                 label="E-mail"
-                style={{ backgroundColor: 'white' }}
                 placeholder="Digite seu email"
                 name="email"
                 keyboardType="email-address"
@@ -133,6 +107,8 @@ const LoginScreen: FC = () => {
               />
 
               <FormInput
+                containerStyle={{ marginVertical: 10 }}
+                labelStyle={{ color: 'white', marginBottom: 5 }}
                 label="Senha"
                 placeholder="Digite sua senha"
                 name="password"
@@ -142,7 +118,14 @@ const LoginScreen: FC = () => {
                 secureTextEntry
               />
 
-              <Button onPress={onSubmit} title="Entrar" />
+              <Button
+                containerStyle={{
+                  marginTop: 10,
+                }}
+                onPress={form.handleSubmit(onSubmit)}
+                loading={form.formState.isSubmitting}
+                title="Entrar"
+              />
 
               <TouchableOpacity
                 style={{

@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-// import useFormErrorMessage from '../../hooks/use-form-error-message';
 import Input, { InputPropTypes } from '../input';
 import { toString } from 'lodash';
+import useFormErrorMessage from '@/hooks/use-form-error-message';
 
 const FormInput: FC<FormInputPropTypes> = ({
   name,
@@ -11,7 +11,7 @@ const FormInput: FC<FormInputPropTypes> = ({
 }) => {
   const { control, formState } = useFormContext();
 
-  //   const errorMessage = useFormErrorMessage(formState, name);
+  const errorMessage = useFormErrorMessage(formState, name);
 
   return (
     <Controller
@@ -28,6 +28,7 @@ const FormInput: FC<FormInputPropTypes> = ({
             )
           }
           value={toString(value)}
+          errorMessage={errorMessage}
         />
       )}
     />
