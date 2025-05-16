@@ -45,8 +45,8 @@ public class MarketServiceTest {
         UserTeam team = getTestUserTeam();
 
         when(playersService.getProfessionalPlayerById(player.getId())).thenReturn(player);
-        when(userService.getUserData(user.getId())).thenReturn(user);
-        when(userTeamService.getUserTeam(user.getId())).thenReturn(team);
+        when(userService.find(user.getId())).thenReturn(user);
+        when(userTeamService.find(user.getId())).thenReturn(team);
 
         TransactionResponseDTO response = marketService.buyPlayer(user.getId(), player.getId());
 
@@ -54,7 +54,7 @@ public class MarketServiceTest {
         assertTrue(response.getUpdatedTeam().hasPlayer(player.getId()));
         assertEquals(1f, user.getCoins());
 
-        verify(userTeamService, times(1)).getUserTeam(user.getId());
+        verify(userTeamService, times(1)).find(user.getId());
     }
 
     @Test
@@ -65,8 +65,8 @@ public class MarketServiceTest {
         UserTeam team = getTestUserTeam();
 
         when(playersService.getProfessionalPlayerById(player.getId())).thenReturn(player);
-        when(userService.getUserData(user.getId())).thenReturn(user);
-        when(userTeamService.getUserTeam(user.getId())).thenReturn(team);
+        when(userService.find(user.getId())).thenReturn(user);
+        when(userTeamService.find(user.getId())).thenReturn(team);
 
         assertThrows(InsufficientBalance.class, () -> {
             marketService.buyPlayer(user.getId(), player.getId());
@@ -84,8 +84,8 @@ public class MarketServiceTest {
         team.addPlayer(new ProfessionalPlayerEntry(player));
 
         when(playersService.getProfessionalPlayerById(player.getId())).thenReturn(player);
-        when(userService.getUserData(user.getId())).thenReturn(user);
-        when(userTeamService.getUserTeam(user.getId())).thenReturn(team);
+        when(userService.find(user.getId())).thenReturn(user);
+        when(userTeamService.find(user.getId())).thenReturn(team);
 
         TransactionResponseDTO response = marketService.sellPlayer(user.getId(), player.getId());
 

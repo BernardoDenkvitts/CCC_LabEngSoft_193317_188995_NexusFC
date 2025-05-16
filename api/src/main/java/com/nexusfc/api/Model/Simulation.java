@@ -1,5 +1,6 @@
 package com.nexusfc.api.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nexusfc.api.Model.Enum.SimulationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -57,5 +58,10 @@ public class Simulation {
         this.betValue = betValue;
         this.desafianteTeamPlayers = challengerTeamPlayers;
         this.versusPlayer = versusPlayer;
+    }
+
+    @JsonIgnore
+    public String getDesafiadoId() {
+        return this.desafiado.toHexString();
     }
 }

@@ -3,6 +3,7 @@ package com.nexusfc.api.Simulation.Dto;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.nexusfc.api.Model.Simulation;
 import com.nexusfc.api.Model.Enum.SimulationStatus;
@@ -18,7 +19,6 @@ public class SimulationResponseDTO {
     private String id;
     private Boolean versusPlayer;
     private String challengerId;
-    private Float remainingCoins;
     private String challengedId;
     private SimulationStatus status;
     private Float betValue;
@@ -32,7 +32,6 @@ public class SimulationResponseDTO {
             simulation.getId(),
             simulation.getVersusPlayer(),
             simulation.getDesafiante().getId(),
-            simulation.getDesafiante().getCoins(),
             simulation.getDesafiado().toHexString(),
             simulation.getStatus(),
             simulation.getBetValue(),

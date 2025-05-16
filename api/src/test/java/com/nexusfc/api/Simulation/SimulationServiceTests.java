@@ -2,8 +2,10 @@ package com.nexusfc.api.Simulation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,19 +17,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
-import com.nexusfc.api.AI.GeminiService;
 import com.nexusfc.api.Model.ProfessionalTeam;
 import com.nexusfc.api.Model.Simulation;
 import com.nexusfc.api.Model.User;
 import com.nexusfc.api.Model.UserTeam;
 import com.nexusfc.api.Model.Component.ProfessionalPlayerEntry;
 import com.nexusfc.api.Model.Enum.SimulationStatus;
-import com.nexusfc.api.Notification.NotificationDTO;
+import com.nexusfc.api.Notification.SimulationNotificationDTO;
 import com.nexusfc.api.Notification.NotificationMapper;
 import com.nexusfc.api.Notification.NotificationService;
-import com.nexusfc.api.ProfessionalPlayers.ProfessionalPlayersService;
 import com.nexusfc.api.ProfessionalTeams.ProfessionalTeamsService;
 import com.nexusfc.api.Repository.SimulationsRepository;
 import com.nexusfc.api.User.Service.UserService;
@@ -35,6 +37,7 @@ import com.nexusfc.api.User.Service.UserTeamService;
 
 @ExtendWith(MockitoExtension.class)
 public class SimulationServiceTests {
+
     @Mock
     private SimulationsRepository simulationsRepository;
     @Mock
@@ -44,12 +47,11 @@ public class SimulationServiceTests {
     @Mock
     private ProfessionalTeamsService professionalTeamsService;
     @Mock
-    private ProfessionalPlayersService professionalPlayersService;
-    @Mock
-    private GeminiService AIService;
-    @Mock
     private NotificationService notificationService;
+    @Mock
+    private ApplicationEventPublisher publisher;
 
+    @Spy
     @InjectMocks
     private SimulationService simulationService;
 
@@ -104,7 +106,8 @@ public class SimulationServiceTests {
 
         verify(userService).save(challenger);
 
-        NotificationDTO notification = NotificationMapper.toDto(challenger, challengerTeam, simulation.getCreatedAt());
+        SimulationNotificationDTO notification = NotificationMapper.toDto(challenger, challengerTeam,
+                simulation.getCreatedAt());
         verify(notificationService, times(1)).notifyUser(challenged.getId(), notification);
 
         verify(simulationsRepository).save(any(Simulation.class));
@@ -118,6 +121,66 @@ public class SimulationServiceTests {
         assertEquals(challenger.getCoins(), 25f);
         assertEquals(simulation.getStatus(), SimulationStatus.REQUESTED);
         assertEquals(challengerTeam.getStarterPlayers().size(), simulation.getDesafianteTeamPlayers().size());
+    }
+
+    @Test
+    void shouldAcceptSimulation() {
+        String simId = new ObjectId().toHexString();
+
+        Simulation sim = new Simulation();
+        sim.setId(simId);
+        sim.setBetValue(50f);
+
+        User challenged = TestData.createTestUser();
+        challenged.setCoins(200f);
+
+        UserTeam challengedTeam = TestData.createTestUserTeam(challenged.getId());
+
+        doReturn(sim).when(simulationService).find(simId);
+
+        when(userService.find(challenged.getId())).thenReturn(challenged);
+        when(userTeamService.find(challenged.getId())).thenReturn(challengedTeam);
+        when(simulationsRepository.save(sim)).thenReturn(sim);
+
+        Simulation result = simulationService.accept(simId, challenged.getId());
+
+        assertSame(sim, result);
+        assertEquals(
+                challengedTeam.getStarterPlayers().stream()
+                        .map(entry -> entry.getPlayer())
+                        .toList(),
+                sim.getDesafiadoTeamPlayers());
+
+        assertEquals(SimulationStatus.IN_PROGRESS, result.getStatus());
+        verify(publisher, times(1)).publishEvent(any(SimulationAcceptedEvent.class));
+        verify(simulationService).find(simId);
+        verify(userService).find(challenged.getId());
+        verify(userTeamService).find(challenged.getId());
+        verify(simulationsRepository).save(sim);
+    }
+
+    @Test
+    void shouldStartPveSimulationSuccessfully() {
+        String simId = new ObjectId().toHexString();
+
+        Simulation sim = new Simulation();
+        sim.setId(simId);
+        sim.setVersusPlayer(false);
+        User challenger = TestData.createTestUser();
+        sim.setDesafiante(challenger);
+        sim.setStatus(SimulationStatus.REQUESTED);
+
+        doReturn(sim).when(simulationService).find(simId);
+
+        when(simulationsRepository.save(sim)).thenReturn(sim);
+
+        Simulation result = simulationService.startPveSimulation(simId, challenger.getId());
+
+        assertSame(sim, result);
+        assertEquals(SimulationStatus.IN_PROGRESS, sim.getStatus());
+        verify(simulationService).find(simId);
+        verify(publisher, times(1)).publishEvent(any(SimulationAcceptedEvent.class));
+        verify(simulationsRepository).save(sim);
     }
 
 }

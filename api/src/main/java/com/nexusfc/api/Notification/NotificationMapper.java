@@ -9,15 +9,13 @@ import com.nexusfc.api.Simulation.Dto.ProfessionalPlayerResponseDTO;
 
 public class NotificationMapper {
 
-    public static NotificationDTO toDto(User challenger, UserTeam challengerTeam, Instant createdAt) {
+    public static SimulationNotificationDTO toDto(User challenger, UserTeam challengerTeam, Instant createdAt) {
         List<ProfessionalPlayerResponseDTO> playerDtos = challengerTeam.getStarterPlayers()
                 .stream()
                 .map(ProfessionalPlayerResponseDTO::from)
                 .toList();
 
-        NotificationDTO dto = new NotificationDTO(challenger.getId(), challenger.getName(), challengerTeam.getName(),
+        return new SimulationNotificationDTO(challenger.getId(), challenger.getName(), challengerTeam.getName(),
                 createdAt, playerDtos);
-
-        return dto;
     }
 }

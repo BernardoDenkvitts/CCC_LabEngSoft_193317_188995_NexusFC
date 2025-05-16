@@ -32,8 +32,8 @@ public class MarketService {
     @Transactional
     public TransactionResponseDTO buyPlayer(String userId, String playerId) {
         ProfessionalPlayer player = playersService.getProfessionalPlayerById(playerId);
-        User user = userService.getUserData(userId);
-        UserTeam team = userTeamService.getUserTeam(userId);
+        User user = userService.find(userId);
+        UserTeam team = userTeamService.find(userId);
 
         if (team.hasPlayer(playerId))
             throw new PlayerAlreadyOwnedException();
@@ -53,18 +53,18 @@ public class MarketService {
     @Transactional
     public TransactionResponseDTO sellPlayer(String userId, String playerId) {
         ProfessionalPlayer player = playersService.getProfessionalPlayerById(playerId);
-        User user = userService.getUserData(userId);
-        UserTeam team = userTeamService.getUserTeam(userId);
+        User user = userService.find(userId);
+        UserTeam team = userTeamService.find(userId);
 
         if (!team.hasPlayer(playerId))
             throw new PlayerNotInTeamException(playerId);
 
         team.removePlayer(team.getPlayerEntry(playerId));
         user.increaseCoins(player.getCost());
-        
+
         userTeamService.save(team);
         userService.save(user);
-        
+
         return new TransactionResponseDTO(user.getCoins(), team);
     }
 

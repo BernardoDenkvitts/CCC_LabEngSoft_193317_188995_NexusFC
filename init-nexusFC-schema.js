@@ -127,7 +127,7 @@ db.createCollection("Simulations", {
           "bsonType": "objectId"
         },
         "status": {
-          "enum": ["REQUESTED", "DENIED", "COMPLETED"]
+          "enum": ["REQUESTED", "IN_PROGRESS", "DENIED", "COMPLETED"]
         },
         "bet_value": {
           "bsonType": "double"
