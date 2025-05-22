@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.nexusfc.api.AI.GeminiService;
@@ -23,6 +25,7 @@ import com.nexusfc.api.ProfessionalTeams.ProfessionalTeamsService;
 import com.nexusfc.api.Repository.SimulationsRepository;
 import com.nexusfc.api.Simulation.Exception.IncompleteTeamException;
 import com.nexusfc.api.Simulation.Exception.InvalidSimulationStateException;
+import com.nexusfc.api.Simulation.Exception.UserIsNotInThisSimulationException;
 import com.nexusfc.api.User.Service.UserService;
 import com.nexusfc.api.User.Service.UserTeamService;
 
@@ -52,8 +55,25 @@ public class SimulationService {
         this.publisher = publisher;
     }
 
-    public Simulation find(String id) {
-        return simulationsRepository.findById(id).orElseThrow(() -> new NotFoundException("Simulation with id " + id));
+    public Simulation find(String id, String userId) {
+        Simulation simulation = simulationsRepository.findById(id).orElseThrow(() -> new NotFoundException("Simulation with id " + id));
+        
+        if (!simulation.getDesafiante().getId().equals(userId) & !simulation.getDesafiadoId().equals(userId))
+            throw new UserIsNotInThisSimulationException();
+
+        return simulation;
+    }
+
+    public Page<Simulation> getSimulationHistory(String userId, Pageable pageable) {
+        userService.find(userId);
+
+        return simulationsRepository.findSimulationHistoryByUserId(pageable, new ObjectId(userId));
+    }
+
+    public Simulation getSimulationById(String id, String userId) {
+        userService.find(userId);
+        
+        return find(id, userId);
     }
 
     @Transactional
@@ -76,21 +96,18 @@ public class SimulationService {
 
     @Transactional
     public Simulation accept(String simulationId, String challengedId) {
-        Simulation simulation = find(simulationId);
+        User challenged = userService.find(challengedId);
+        Simulation simulation = find(simulationId, challengedId);
 
         if (!simulation.getStatus().equals(SimulationStatus.REQUESTED))
             throw new InvalidSimulationStateException(simulationId, simulation.getStatus());
 
-        User challenged = userService.find(challengedId);
-
-        if (!challenged.hasEnoughCoins(simulation.getBetValue())) {
+        if (!challenged.hasEnoughCoins(simulation.getBetValue()))
             throw new InsufficientBalance(challenged.getCoins(), simulation.getBetValue());
-        }
 
         UserTeam challengedTeam = userTeamService.find(challenged.getId());
-        if (!challengedTeam.hasCompleteTeam()) {
+        if (!challengedTeam.hasCompleteTeam())
             throw new IncompleteTeamException();
-        }
 
         List<ProfessionalPlayer> challengedTeamPlayers = challengedTeam.getStarterPlayers().stream()
                 .map(entry -> entry.getPlayer())
@@ -105,7 +122,7 @@ public class SimulationService {
 
     @Transactional
     public Simulation startPveSimulation(String simulationId, String challengerId) {
-        Simulation simulation = find(simulationId);
+        Simulation simulation = find(simulationId, challengerId);
         if (!simulation.getStatus().equals(SimulationStatus.REQUESTED))
             throw new InvalidSimulationStateException(simulationId, simulation.getStatus());
 
@@ -131,12 +148,8 @@ public class SimulationService {
 
     @Transactional
     public Simulation reject(String simulationId, String challengedId) {
-        Simulation simulation = find(simulationId);
-
-        if (!simulation.getDesafiadoId().equals(challengedId)) {
-            throw new RuntimeException("Not allowed");
-        }
-
+        Simulation simulation = find(simulationId, challengedId);
+        
         simulation.setStatus(SimulationStatus.DENIED);
 
         User challenger = simulation.getDesafiante();
@@ -153,16 +166,14 @@ public class SimulationService {
     }
 
     private void validateChallenger(Simulation simulation, String challengerId) {
-        if (!simulation.getDesafiante().getId().equals(challengerId)) {
+        if (!simulation.getDesafiante().getId().equals(challengerId))
             throw new RuntimeException("Only the challenger can start this simulation");
-        }
     }
 
     private List<ProfessionalPlayer> prepareAndValidateTeam(String userId) {
         UserTeam team = userTeamService.find(userId);
-        if (!team.hasCompleteTeam()) {
+        if (!team.hasCompleteTeam())
             throw new IncompleteTeamException();
-        }
 
         return team.getStarterPlayers().stream()
                 .map(entry -> entry.getPlayer())
@@ -184,9 +195,8 @@ public class SimulationService {
 
     private User validateChallengerAndGetUser(String challengerUserId, Float betValue) {
         User challenger = userService.find(challengerUserId);
-        if (!challenger.hasEnoughCoins(betValue)) {
+        if (!challenger.hasEnoughCoins(betValue))
             throw new InsufficientBalance(challenger.getCoins(), betValue);
-        }
 
         challenger.decreaseCoins(betValue);
 

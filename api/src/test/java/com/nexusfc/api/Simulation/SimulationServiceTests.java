@@ -113,7 +113,7 @@ public class SimulationServiceTests {
         verify(simulationsRepository).save(any(Simulation.class));
         verify(userService).find(challenger.getId());
         verify(userService).find(challenged.getId());
-        verify(userTeamService).find(challenger.getId());
+        verify(userTeamService, times(2)).find(anyString());
 
         assertNotNull(simulation);
         assertNotNull(simulation.getDesafianteTeamPlayers());
@@ -126,7 +126,6 @@ public class SimulationServiceTests {
     @Test
     void shouldAcceptSimulation() {
         String simId = new ObjectId().toHexString();
-
         Simulation sim = new Simulation();
         sim.setId(simId);
         sim.setBetValue(50f);
@@ -136,7 +135,7 @@ public class SimulationServiceTests {
 
         UserTeam challengedTeam = TestData.createTestUserTeam(challenged.getId());
 
-        doReturn(sim).when(simulationService).find(simId);
+        doReturn(sim).when(simulationService).find(simId, challenged.getId());
 
         when(userService.find(challenged.getId())).thenReturn(challenged);
         when(userTeamService.find(challenged.getId())).thenReturn(challengedTeam);
@@ -153,7 +152,7 @@ public class SimulationServiceTests {
 
         assertEquals(SimulationStatus.IN_PROGRESS, result.getStatus());
         verify(publisher, times(1)).publishEvent(any(SimulationAcceptedEvent.class));
-        verify(simulationService).find(simId);
+        verify(simulationService).find(simId, challenged.getId());
         verify(userService).find(challenged.getId());
         verify(userTeamService).find(challenged.getId());
         verify(simulationsRepository).save(sim);
@@ -170,7 +169,7 @@ public class SimulationServiceTests {
         sim.setDesafiante(challenger);
         sim.setStatus(SimulationStatus.REQUESTED);
 
-        doReturn(sim).when(simulationService).find(simId);
+        doReturn(sim).when(simulationService).find(simId, challenger.getId());
 
         when(simulationsRepository.save(sim)).thenReturn(sim);
 
@@ -178,7 +177,7 @@ public class SimulationServiceTests {
 
         assertSame(sim, result);
         assertEquals(SimulationStatus.IN_PROGRESS, sim.getStatus());
-        verify(simulationService).find(simId);
+        verify(simulationService).find(simId, challenger.getId());
         verify(publisher, times(1)).publishEvent(any(SimulationAcceptedEvent.class));
         verify(simulationsRepository).save(sim);
     }

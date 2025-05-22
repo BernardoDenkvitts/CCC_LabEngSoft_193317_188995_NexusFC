@@ -17,8 +17,8 @@ import com.nexusfc.api.Market.Exception.PlayerAlreadyOwnedException;
 import com.nexusfc.api.Market.Exception.PlayerNotInTeamException;
 import com.nexusfc.api.Simulation.Exception.IncompleteTeamException;
 import com.nexusfc.api.Simulation.Exception.InvalidSimulationStateException;
+import com.nexusfc.api.Simulation.Exception.UserIsNotInThisSimulationException;
 
-import jakarta.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class ExceptionsHandler {
@@ -62,10 +62,20 @@ public class ExceptionsHandler {
     }
 
     @ExceptionHandler({InsufficientBalance.class, PlayerAlreadyOwnedException.class, PlayerNotInTeamException.class, IncompleteTeamException.class, InvalidSimulationStateException.class})
-    public ProblemDetail handleUnprocessableEntityException(RuntimeException ex, HttpServletRequest request ) {
+    public ProblemDetail handleUnprocessableEntityException(RuntimeException ex) {
         ProblemDetail pd = getProblemDetail(HttpStatus.UNPROCESSABLE_ENTITY);
         pd.setTitle("Unprocessable Entity");
         pd.setType(URI.create("Nexusfc/unprocessable-entity"));
+        pd.setDetail(ex.getMessage());
+
+        return pd;
+    }
+
+    @ExceptionHandler({UserIsNotInThisSimulationException.class})
+    public ProblemDetail handleUnauthorized(RuntimeException ex) {
+        ProblemDetail pd = getProblemDetail(HttpStatus.UNAUTHORIZED);
+        pd.setTitle("Unauthorized");
+        pd.setType(URI.create("Nexusfc/unauthorized"));
         pd.setDetail(ex.getMessage());
 
         return pd;
