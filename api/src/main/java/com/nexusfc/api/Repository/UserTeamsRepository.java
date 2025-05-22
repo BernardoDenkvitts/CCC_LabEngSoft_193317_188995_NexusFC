@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserTeamsRepository extends MongoRepository<UserTeam, String> {
     UserTeam findByUserId(ObjectId id);
+
+    UserTeam findByName(String name);
 }
