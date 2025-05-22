@@ -1,6 +1,7 @@
 package com.nexusfc.api.User.Controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nexusfc.api.Model.UserTeam;
@@ -9,6 +10,7 @@ import com.nexusfc.api.User.Service.UserService;
 import com.nexusfc.api.User.Service.UserTeamService;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
@@ -34,4 +36,14 @@ public class UserController {
         return userTeamService.find(id);
     }
 
+    @PatchMapping("/{id}/team")
+    public UserTeam updateTeamName(@PathVariable String id, @RequestParam String newTeamName) {
+        return userTeamService.updateTeamName(id, newTeamName);
+    }
+
+    @PatchMapping("/{id}/team/starter")
+    public UserTeam updateStarter(@PathVariable String id, @RequestParam String playerId) {
+        return userTeamService.changeStarterPlayer(id, playerId);
+    }
+    
 }

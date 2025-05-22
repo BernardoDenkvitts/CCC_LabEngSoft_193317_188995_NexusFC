@@ -18,6 +18,7 @@ import com.nexusfc.api.Market.Exception.PlayerNotInTeamException;
 import com.nexusfc.api.Simulation.Exception.IncompleteTeamException;
 import com.nexusfc.api.Simulation.Exception.InvalidSimulationStateException;
 import com.nexusfc.api.Simulation.Exception.UserIsNotInThisSimulationException;
+import com.nexusfc.api.User.Exception.TeamNameAlreadyInUserException;
 
 
 @RestControllerAdvice
@@ -41,7 +42,7 @@ public class ExceptionsHandler {
         return pd;
     }
 
-    @ExceptionHandler({EmailAlreadyInUseException.class})
+    @ExceptionHandler({EmailAlreadyInUseException.class, TeamNameAlreadyInUserException.class})
     public ProblemDetail handleConflictException(RuntimeException ex) {
         ProblemDetail pd = getProblemDetail(HttpStatus.CONFLICT);
         pd.setTitle("Conflict");

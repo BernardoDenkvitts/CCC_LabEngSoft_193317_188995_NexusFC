@@ -75,6 +75,28 @@ public class UserTeam {
         return coveredLanes.containsAll(EnumSet.allOf(Lane.class));
     }
 
+    public boolean setStarter(String playerId) {
+        ProfessionalPlayerEntry playerEntry = getPlayerEntry(playerId);
+        if (playerEntry == null)
+            return false;
+        
+        List<ProfessionalPlayerEntry> starters = getStarterPlayers();
+        for (ProfessionalPlayerEntry entry : starters) {
+            if (entry.getPlayer().getLane().equals(playerEntry.getPlayer().getLane())) {
+                entry.setIsStarter(false);
+                
+                if (entry.getPlayer().getId().equals(playerId)) {
+                    return true;
+                }
+                
+                break;
+            }
+        }
+        
+        playerEntry.setIsStarter(true);
+        return true;
+    }
+
     @JsonIgnore
     public List<ProfessionalPlayerEntry> getStarterPlayers() {
         return professionalPlayers.stream().filter(entry -> entry.getIsStarter() == true).toList();
