@@ -1,16 +1,13 @@
-import { isAxiosError } from 'axios';
 import React, { FC } from 'react';
 import { FormProvider, SubmitHandler } from 'react-hook-form';
 import {
   Image,
   SafeAreaView,
   ScrollView,
-  Text,
   ToastAndroid,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import UserService from '@/services/user';
+import UserService, { UserCreate } from '@/services/user';
 import { router, Stack } from 'expo-router';
 import Button from '@/components/button';
 import Yup from '@/utils/yup';
@@ -21,37 +18,34 @@ import { GlobalStore } from '@/services/stores';
 const logo = require('../../assets/images/logo.jpg');
 
 const validationSchema = Yup.object().shape({
+  name: Yup.string().required().default(''),
   email: Yup.string().required().email().default(''),
   password: Yup.string().required().default(''),
 });
 
-const LoginScreen: FC = () => {
+const SignupScreen: FC = () => {
   const form = useForm({ validationSchema });
 
-  const onSubmit: SubmitHandler<FormValues> = async ({ email, password }) => {
+  const onSubmit: SubmitHandler<UserCreate> = async ({
+    name,
+    email,
+    password,
+  }) => {
     try {
-      const user = await UserService.login({ email, password });
+      const user = await UserService.create({ name, email, password });
 
       GlobalStore.set('user', user);
 
-      ToastAndroid.show('Usuário cadastrado', ToastAndroid.LONG);
+      ToastAndroid.show('Usuário registrado', ToastAndroid.LONG);
 
-      router.navigate('/(tabs)');
+      router.navigate('/explore');
     } catch (error) {
       console.error(error);
 
-      let message = 'Falha ao realizar o login.';
-
-      if (isAxiosError(error) && error.response?.status === 401) {
-        message = 'Email ou senha incorretos.';
-      }
+      let message = 'Falha ao se registrar.';
 
       ToastAndroid.show(message, ToastAndroid.LONG);
     }
-  };
-
-  const onPressSignup = () => {
-    router.navigate('/(public)/signup');
   };
 
   return (
@@ -98,6 +92,17 @@ const LoginScreen: FC = () => {
               <FormInput
                 containerStyle={{ marginVertical: 10 }}
                 labelStyle={{ color: 'white', marginBottom: 5 }}
+                label="Nome"
+                placeholder="Digite seu nome"
+                name="name"
+                keyboardType="default"
+                textContentType="name"
+                autoComplete="name"
+                autoCapitalize="words"
+              />
+              <FormInput
+                containerStyle={{ marginVertical: 10 }}
+                labelStyle={{ color: 'white', marginBottom: 5 }}
                 label="E-mail"
                 placeholder="Digite seu email"
                 name="email"
@@ -125,31 +130,8 @@ const LoginScreen: FC = () => {
                 }}
                 onPress={form.handleSubmit(onSubmit)}
                 loading={form.formState.isSubmitting}
-                title="Entrar"
+                title="Registrar-se"
               />
-
-              <TouchableOpacity
-                style={{
-                  paddingHorizontal: 3,
-                  paddingVertical: 10,
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                }}
-                onPress={onPressSignup}
-              >
-                <Text style={{ fontSize: 15, color: 'white' }}>
-                  Novo no NexusFC?{' '}
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: 'bold',
-                      color: '#C4932F',
-                    }}
-                  >
-                    Cadastre-se
-                  </Text>
-                </Text>
-              </TouchableOpacity>
             </View>
           </FormProvider>
         </View>
@@ -158,9 +140,4 @@ const LoginScreen: FC = () => {
   );
 };
 
-type FormValues = {
-  email: string;
-  password: string;
-};
-
-export default LoginScreen;
+export default SignupScreen;
