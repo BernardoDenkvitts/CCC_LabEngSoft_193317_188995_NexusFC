@@ -15,7 +15,6 @@ class ApiRequest extends ApiBase {
     });
 
     this.axios.interceptors.request.use((request) => {
-      console.log('vim aqui', request);
       const token = GlobalStore.get('user')?.token;
 
       if (token) {

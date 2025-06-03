@@ -1,7 +1,8 @@
-import FormInput from '@/components/form-input';
-import useForm from '@/utils/use-form';
-import Yup from '@/utils/yup';
-import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
+import {
+  FontAwesome,
+  FontAwesome5,
+  MaterialCommunityIcons,
+} from '@expo/vector-icons';
 import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -47,27 +48,38 @@ const HomeScreen = () => {
             paddingHorizontal: 10,
             paddingVertical: 20,
             borderRadius: 15,
-            backgroundColor: '#0D577C',
           }}
         >
-          <Text style={styles.teamName}>{team.name}</Text>
-          <View style={styles.playersContainer}>
-            {team.players.map((player, index) => (
-              <View key={index} style={styles.playerCard}>
-                <FontAwesome5 name="user" size={40} color={'white'} />
-                {/* <Image source={player.image} style={styles.playerImage} /> */}
-                <Text style={styles.playerName}>{player.name}</Text>
+          <View style={{borderWidth: 1, borderRadius: 12, borderColor: '#f0c420'}}>
+            <View style={styles.inputWrapper}>
+              <Text style={styles.teamLabel}>{mockTeam.name}</Text>
+              <View style={styles.playersContainer}>
+                {team.players.map((player, index) => (
+                  <View key={index} style={styles.playerCard}>
+                    <FontAwesome5 name="user" size={40} color={'white'} />
+                    {/* <Image source={player.image} style={styles.playerImage} /> */}
+                    <Text style={styles.memberName}>{player.name}</Text>
+                  </View>
+                ))}
               </View>
-            ))}
-          </View>
-          <View style={styles.statsContainer}>
-            <View style={styles.statBox}>
-              <Text style={styles.statValue}>{team.patrimonio}</Text>
-              <Text style={styles.statLabel}>PATRIMÔNIO</Text>
-            </View>
-            <View style={styles.statBox}>
-              <Text style={styles.statValue}>{team.pontos}</Text>
-              <Text style={styles.statLabel}>PONTOS TOTAIS</Text>
+              <View style={styles.statsContainer}>
+                <View style={styles.statBox}>
+                  <MaterialCommunityIcons
+                    name="star-four-points"
+                    size={20}
+                    color="#f0c420"
+                  />
+                  <Text style={styles.statValue}>{team.patrimonio}</Text>
+                </View>
+                <View style={styles.statBox}>
+                  <MaterialCommunityIcons
+                    name="trophy-outline"
+                    size={24}
+                    color="#f0c420"
+                  />
+                  <Text style={styles.statValue}>{team.pontos}</Text>
+                </View>
+              </View>
             </View>
           </View>
         </View>
@@ -148,7 +160,7 @@ const HomeScreen = () => {
             <View
               key={index}
               style={[
-                styles.playerCard,
+                styles.cardTimes,
                 {
                   flex: 1,
                   flexDirection: 'row',
@@ -183,11 +195,37 @@ const HomeScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  inputWrapper: {
+    position: 'relative',
+    borderWidth: 2,
+    borderColor: '#f0c420',
+    borderRadius: 6,
+    padding: 10,
+  },
+  teamLabel: {
+    position: 'absolute',
+    top: -10,
+    left: 12,
+    paddingRight: 50,
+    paddingLeft: 10,
+    fontSize: 20,
+    backgroundColor: '#0A131D',
+    color: 'white',
+  },
   container: {
     padding: 20,
-    backgroundColor: '#111',
+    backgroundColor: '#white',
     flexGrow: 1,
     width: '100%',
+  },
+  memberName: {
+    backgroundColor: '#c49b3b',
+    color: '#000',
+    fontWeight: 'bold',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+    fontSize: 12,
   },
   teamName: {
     color: '#fff',
@@ -197,11 +235,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   playersContainer: {
+    marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
   },
   playerCard: {
+    alignItems: 'center',
+    flexDirection: 'column',
+    padding: 5,
+  },
+  cardTimes: {
     alignItems: 'center',
     flexDirection: 'column',
     margin: 10,
@@ -220,17 +264,19 @@ const styles = StyleSheet.create({
   },
   statsContainer: {
     flexDirection: 'row',
+    alignSelf: 'flex-end',
     justifyContent: 'space-around',
     marginTop: 30,
-    width: '100%',
   },
   statBox: {
     alignItems: 'center',
+    marginHorizontal: 10,
+    flexDirection: 'row',
   },
   statValue: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#C4932F',
+    marginLeft: 5,
+    color: 'white',
   },
   statLabel: {
     color: 'white',
