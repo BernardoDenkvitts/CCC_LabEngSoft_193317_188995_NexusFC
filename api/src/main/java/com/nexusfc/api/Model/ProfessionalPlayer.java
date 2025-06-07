@@ -59,4 +59,20 @@ public class ProfessionalPlayer {
 
     @Field("image_url")
     private String imageUrl;
+
+    public String statsToString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("nick: ").append(nick).append("\n");
+        sb.append("lane: ").append(lane.name()).append("\n");
+        sb.append("overall kill: ").append(String.format("%.2f", overallKill)).append("\n");
+        sb.append("overall death: ").append(String.format("%.2f", overallDeath)).append("\n");
+        sb.append("overall assist: ").append(String.format("%.2f", overallAssist)).append("\n");
+        sb.append("overall Damage: ").append(String.format("%.2f", overallDamage)).append("\n");
+        sb.append("overall gold: ").append(String.format("%.2f", overallGold)).append("\n");
+        sb.append("overall cs: ").append(String.format("%.2f", overallCs)).append("\n");
+        sb.append("overall win rate: ").append(String.format("%.2f", overallWinRate));
+
+        return sb.toString();
+    }
 }
