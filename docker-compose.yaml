@@ -1,20 +1,25 @@
 services:
   mongodb:
+    container_name: mongodb
     hostname: mongodb
     image: mongo:8.0.6
     ports:
       - "27017:27017"
     restart: always
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+    entrypoint: /usr/bin/mongod --bind_ip_all --replSet rs0
+    volumes:
+      - mongodb_data:/data/db
 
   mongosetup:
+    container_name: mongosetup
     image: mongo:8.0.6
     depends_on:
       - mongodb
     volumes:
       - .:/scripts
     restart: "no"
-    entrypoint: [ "bash", "/scripts/mongo_setup.sh"]
+    entrypoint: bash /scripts/mongo_setup.sh
 
+# ESTA SEÇÃO PRECISA ESTAR FORA DO services:
 volumes:
   mongodb_data:

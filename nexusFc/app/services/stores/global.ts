@@ -1,9 +1,9 @@
 import { MMKV } from 'react-native-mmkv';
 import StoreBase from './base';
-import { UserWithToken } from '@/utils/types/user';
+import { User } from '../user';
 
 export type GlobalStorageValues = {
-  user: UserWithToken | undefined;
+  user: User | undefined;
 };
 
 class GlobalStore extends StoreBase<GlobalStorageValues> {

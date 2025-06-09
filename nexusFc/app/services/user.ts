@@ -1,29 +1,50 @@
+import { ObjectId } from '@/utils/types/utils';
 import apiRequest from './api-request';
+import professionalPlayers, {
+  ProfessionalPlayer,
+} from './professional-players';
 
 class UserService {
-  private path = 'auth';
+  private path_authentication = 'auth';
+  private path_user = 'users';
 
   async create(user: UserCreate) {
-    console.log('create user', user);
-    const { data } = await apiRequest.post<any>(`${this.path}/register`, {
-      ...user,
-    });
+    const { data } = await apiRequest.post<User>(
+      `${this.path_authentication}/register`,
+      {
+        ...user,
+      },
+    );
 
     return data;
   }
 
   async update(id: number, user: Partial<UserCreate>) {
-    const { data } = await apiRequest.patch<any>(`${this.path}/${id}`, {
-      user,
-    });
+    const { data } = await apiRequest.patch<User>(
+      `${this.path_authentication}/${id}`,
+      {
+        user,
+      },
+    );
 
     return data;
   }
 
   async login(user: UserLogin) {
-    const { data } = await apiRequest.post<any>(`${this.path}/login`, {
-      ...user,
-    });
+    const { data } = await apiRequest.post<User>(
+      `${this.path_authentication}/login`,
+      {
+        ...user,
+      },
+    );
+
+    return data;
+  }
+
+  async getTeam(id: string | undefined): Promise<UserTeam> {
+    const { data } = await apiRequest.get<UserTeam>(
+      `${this.path_user}/${id}/team`,
+    );
 
     return data;
   }
@@ -35,7 +56,30 @@ export type UserCreate = {
   password: string;
 };
 
-type UserLogin = {
+export type User = {
+  _id: ObjectId;
+  name: string;
+  email: string;
+  password: string;
+  created_at: string;
+  last_rewarded_login: string;
+  coins: number;
+  token: string;
+};
+
+type ProfessionalPlayerEntry = {
+  player: ProfessionalPlayer;
+  isStarter: boolean;
+};
+
+export type UserTeam = {
+  _id: ObjectId;
+  name: string;
+  user_id: ObjectId;
+  professionalPlayers: ProfessionalPlayerEntry[];
+};
+
+export type UserLogin = {
   email: string;
   password: string;
 };

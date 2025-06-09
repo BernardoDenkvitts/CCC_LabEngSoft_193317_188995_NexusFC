@@ -1,0 +1,29 @@
+[{
+  "_id": {
+    "$oid": "681d5c53e82a0d3f43e82aa6"
+  },
+  "name": "Bernardo Denkvitts",
+  "email": "bernardoarcari@gmail.com",
+  "password": "$2a$10$Pnr3U0FQzWoPSJHt3G5kmO4rP5butbVfVwQxhqPfyAZh/NG3.fK52",
+  "created_at": {
+    "$date": "2025-05-09T01:37:23.492Z"
+  },
+  "coins": 10065,
+  "_class": "com.nexusfc.api.Model.User"
+},
+{
+  "_id": {
+    "$oid": "681d5c66e82a0d3f43e82aa8"
+  },
+  "name": "Daniel Zyger",
+  "email": "danielzyger@gmail.com",
+  "password": "$2a$10$.FJWkKJ9mol97fWXFnn4IOyM9fQweySgC2uI2JmwMKB3KimztKgc.",
+  "created_at": {
+    "$date": "2025-05-09T01:37:42.279Z"
+  },
+  "last_rewarded_login": {
+    "$date": "2025-05-09T01:38:15.682Z"
+  },
+  "coins": 9974,
+  "_class": "com.nexusfc.api.Model.User"
+}]

@@ -1,8 +1,14 @@
 #!/bin/bash
-echo "sleeping for 10 seconds"
-sleep 10
+echo "Esperando MongoDB iniciar..."
 
-echo mongo_setup.sh time now: `date +"%T" `
+# Espera até o MongoDB aceitar conexões
+until mongosh --host mongodb:27017 --eval "print('Mongo está pronto')" > /dev/null 2>&1; do
+  sleep 2
+done
+
+echo "⏰ Hora atual: $(date +"%T")"
+echo "1) Iniciando replica set…"
+
 mongosh --host mongodb:27017 <<EOF
   var cfg = {
     "_id": "rs0",
@@ -12,13 +18,13 @@ mongosh --host mongodb:27017 <<EOF
         "_id": 0,
         "host": "mongodb:27017",
         "priority": 2
-      },
+      }
     ]
   };
   rs.initiate(cfg);
 EOF
 
-echo "4) Loading database schema…"
+echo "2) Carregando schema…"
 mongosh --host mongodb:27017 /scripts/init-nexusFC-schema.js
 
-echo "✔ MongoDB replica set & schema ready!"
+echo "✅ Replica set & schema carregados!"

@@ -1,0 +1,353 @@
+[{
+  "_id": {
+    "$oid": "681d5e26e82a0d3f43e82aaa"
+  },
+  "versus_player": true,
+  "desafiante_id": {
+    "$oid": "681d5c53e82a0d3f43e82aa6"
+  },
+  "desafiado_id": {
+    "$oid": "681d5c66e82a0d3f43e82aa8"
+  },
+  "status": "DENIED",
+  "bet_value": 10,
+  "created_at": {
+    "$date": "2025-05-09T01:45:10.065Z"
+  },
+  "desafiante_team": [
+    {
+      "$oid": "680acf0634c3c8745fb7e37b"
+    },
+    {
+      "$oid": "680acf1734c3c8745fb7e37d"
+    },
+    {
+      "$oid": "680acf0e34c3c8745fb7e37c"
+    },
+    {
+      "$oid": "680acf1f34c3c8745fb7e37e"
+    },
+    {
+      "$oid": "680acf2834c3c8745fb7e37f"
+    }
+  ],
+  "desafiado_team": [],
+  "_class": "com.nexusfc.api.Model.Simulation"
+},
+{
+  "_id": {
+    "$oid": "681d603862031424a01b6736"
+  },
+  "versus_player": true,
+  "desafiante_id": {
+    "$oid": "681d5c53e82a0d3f43e82aa6"
+  },
+  "desafiado_id": {
+    "$oid": "681d5c66e82a0d3f43e82aa8"
+  },
+  "status": "REQUESTED",
+  "bet_value": 10,
+  "created_at": {
+    "$date": "2025-05-09T01:54:00.906Z"
+  },
+  "desafiante_team": [
+    {
+      "$oid": "680acf0634c3c8745fb7e37b"
+    },
+    {
+      "$oid": "680acf1734c3c8745fb7e37d"
+    },
+    {
+      "$oid": "680acf0e34c3c8745fb7e37c"
+    },
+    {
+      "$oid": "680acf1f34c3c8745fb7e37e"
+    },
+    {
+      "$oid": "680acf2834c3c8745fb7e37f"
+    }
+  ],
+  "_class": "com.nexusfc.api.Model.Simulation"
+},
+{
+  "_id": {
+    "$oid": "681d60b54b8980263e4e5374"
+  },
+  "versus_player": true,
+  "desafiante_id": {
+    "$oid": "681d5c53e82a0d3f43e82aa6"
+  },
+  "desafiado_id": {
+    "$oid": "681d5c66e82a0d3f43e82aa8"
+  },
+  "status": "REQUESTED",
+  "bet_value": 5,
+  "created_at": {
+    "$date": "2025-05-09T01:56:05.182Z"
+  },
+  "desafiante_team": [
+    {
+      "$oid": "680acf0634c3c8745fb7e37b"
+    },
+    {
+      "$oid": "680acf1734c3c8745fb7e37d"
+    },
+    {
+      "$oid": "680acf0e34c3c8745fb7e37c"
+    },
+    {
+      "$oid": "680acf1f34c3c8745fb7e37e"
+    },
+    {
+      "$oid": "680acf2834c3c8745fb7e37f"
+    }
+  ],
+  "_class": "com.nexusfc.api.Model.Simulation"
+},
+{
+  "_id": {
+    "$oid": "681d640f03160f55f130f2d2"
+  },
+  "versus_player": true,
+  "desafiante_id": {
+    "$oid": "681d5c53e82a0d3f43e82aa6"
+  },
+  "desafiado_id": {
+    "$oid": "681d5c66e82a0d3f43e82aa8"
+  },
+  "status": "COMPLETED",
+  "bet_value": 5,
+  "created_at": {
+    "$date": "2025-05-09T02:10:22.979Z"
+  },
+  "win": true,
+  "desafiante_team": [
+    {
+      "$oid": "680acf0634c3c8745fb7e37b"
+    },
+    {
+      "$oid": "680acf1734c3c8745fb7e37d"
+    },
+    {
+      "$oid": "680acf0e34c3c8745fb7e37c"
+    },
+    {
+      "$oid": "680acf1f34c3c8745fb7e37e"
+    },
+    {
+      "$oid": "680acf2834c3c8745fb7e37f"
+    }
+  ],
+  "desafiado_team": [
+    {
+      "$oid": "680acf4c34c3c8745fb7e382"
+    },
+    {
+      "$oid": "680acf4434c3c8745fb7e381"
+    },
+    {
+      "$oid": "680acf5d34c3c8745fb7e384"
+    },
+    {
+      "$oid": "680acf6634c3c8745fb7e385"
+    },
+    {
+      "$oid": "680acf7e34c3c8745fb7e386"
+    }
+  ],
+  "_class": "com.nexusfc.api.Model.Simulation"
+},
+{
+  "_id": {
+    "$oid": "6826a145cd3b9175d2680ea0"
+  },
+  "versus_player": true,
+  "desafiante_id": {
+    "$oid": "681d5c53e82a0d3f43e82aa6"
+  },
+  "desafiado_id": {
+    "$oid": "681d5c66e82a0d3f43e82aa8"
+  },
+  "status": "REQUESTED",
+  "bet_value": 15,
+  "created_at": {
+    "$date": "2025-05-16T02:21:57.742Z"
+  },
+  "desafiante_team": [
+    {
+      "$oid": "680acf0634c3c8745fb7e37b"
+    },
+    {
+      "$oid": "680acf1734c3c8745fb7e37d"
+    },
+    {
+      "$oid": "680acf0e34c3c8745fb7e37c"
+    },
+    {
+      "$oid": "680acf1f34c3c8745fb7e37e"
+    },
+    {
+      "$oid": "680acf2834c3c8745fb7e37f"
+    }
+  ],
+  "_class": "com.nexusfc.api.Model.Simulation"
+},
+{
+  "_id": {
+    "$oid": "6826a3920427c01c76016c4c"
+  },
+  "versus_player": true,
+  "desafiante_id": {
+    "$oid": "681d5c53e82a0d3f43e82aa6"
+  },
+  "desafiado_id": {
+    "$oid": "681d5c66e82a0d3f43e82aa8"
+  },
+  "status": "COMPLETED",
+  "bet_value": 20,
+  "created_at": {
+    "$date": "2025-05-16T02:31:46.027Z"
+  },
+  "win": true,
+  "desafiante_team": [
+    {
+      "$oid": "680acf0634c3c8745fb7e37b"
+    },
+    {
+      "$oid": "680acf1734c3c8745fb7e37d"
+    },
+    {
+      "$oid": "680acf0e34c3c8745fb7e37c"
+    },
+    {
+      "$oid": "680acf1f34c3c8745fb7e37e"
+    },
+    {
+      "$oid": "680acf2834c3c8745fb7e37f"
+    }
+  ],
+  "desafiado_team": [
+    {
+      "$oid": "680acf4c34c3c8745fb7e382"
+    },
+    {
+      "$oid": "680acf4434c3c8745fb7e381"
+    },
+    {
+      "$oid": "680acf5d34c3c8745fb7e384"
+    },
+    {
+      "$oid": "680acf6634c3c8745fb7e385"
+    },
+    {
+      "$oid": "680acf7e34c3c8745fb7e386"
+    }
+  ],
+  "_class": "com.nexusfc.api.Model.Simulation"
+},
+{
+  "_id": {
+    "$oid": "6826a4610427c01c76016c4d"
+  },
+  "versus_player": false,
+  "desafiante_id": {
+    "$oid": "681d5c53e82a0d3f43e82aa6"
+  },
+  "desafiado_id": {
+    "$oid": "67fe61e66264fd6e0bd861e0"
+  },
+  "status": "COMPLETED",
+  "bet_value": 20,
+  "created_at": {
+    "$date": "2025-05-16T02:35:13.731Z"
+  },
+  "win": true,
+  "desafiante_team": [
+    {
+      "$oid": "680acf0634c3c8745fb7e37b"
+    },
+    {
+      "$oid": "680acf1734c3c8745fb7e37d"
+    },
+    {
+      "$oid": "680acf0e34c3c8745fb7e37c"
+    },
+    {
+      "$oid": "680acf1f34c3c8745fb7e37e"
+    },
+    {
+      "$oid": "680acf2834c3c8745fb7e37f"
+    }
+  ],
+  "desafiado_team": [
+    {
+      "$oid": "680acf0634c3c8745fb7e37b"
+    },
+    {
+      "$oid": "680acf0e34c3c8745fb7e37c"
+    },
+    {
+      "$oid": "680acf1734c3c8745fb7e37d"
+    },
+    {
+      "$oid": "680acf1f34c3c8745fb7e37e"
+    },
+    {
+      "$oid": "680acf2834c3c8745fb7e37f"
+    }
+  ],
+  "_class": "com.nexusfc.api.Model.Simulation"
+},
+{
+  "_id": {
+    "$oid": "6826ac6b626b5475e66335f1"
+  },
+  "versus_player": false,
+  "desafiante_id": {
+    "$oid": "681d5c53e82a0d3f43e82aa6"
+  },
+  "desafiado_id": {
+    "$oid": "67fe61e66264fd6e0bd861e0"
+  },
+  "status": "COMPLETED",
+  "bet_value": 50,
+  "created_at": {
+    "$date": "2025-05-16T03:09:31.161Z"
+  },
+  "win": true,
+  "desafiante_team": [
+    {
+      "$oid": "680acf0634c3c8745fb7e37b"
+    },
+    {
+      "$oid": "680acf1734c3c8745fb7e37d"
+    },
+    {
+      "$oid": "680acf0e34c3c8745fb7e37c"
+    },
+    {
+      "$oid": "680acf1f34c3c8745fb7e37e"
+    },
+    {
+      "$oid": "680acf2834c3c8745fb7e37f"
+    }
+  ],
+  "desafiado_team": [
+    {
+      "$oid": "680acf0634c3c8745fb7e37b"
+    },
+    {
+      "$oid": "680acf0e34c3c8745fb7e37c"
+    },
+    {
+      "$oid": "680acf1734c3c8745fb7e37d"
+    },
+    {
+      "$oid": "680acf1f34c3c8745fb7e37e"
+    },
+    {
+      "$oid": "680acf2834c3c8745fb7e37f"
+    }
+  ],
+  "_class": "com.nexusfc.api.Model.Simulation"
+}]

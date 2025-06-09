@@ -6,6 +6,7 @@ import com.nexusfc.api.Security.TokenService;
 import org.springframework.context.ApplicationContext;
 import com.nexusfc.api.Auth.Dto.CredentialsDTO;
 import com.nexusfc.api.Auth.Dto.LoginResponseDTO;
+import com.nexusfc.api.Auth.Dto.UserDTO;
 import com.nexusfc.api.Auth.Dto.NewUserDTO;
 import com.nexusfc.api.Auth.Exception.EmailAlreadyInUseException;
 import com.nexusfc.api.Model.User;
@@ -53,19 +54,28 @@ public class AuthService implements UserDetailsService {
     @Transactional
     public LoginResponseDTO login(CredentialsDTO dto) {
         var authenticationManager = applicationContext.getBean(AuthenticationManager.class);
-
         var usernamePassword = new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword());
         var auth = authenticationManager.authenticate(usernamePassword);
-        var token = tokenService.generateToken((User) auth.getPrincipal());
 
         User user = (User) auth.getPrincipal();
+        var token = tokenService.generateToken(user);
+
         if (user.isFirstDailyLogin()) {
             user.increaseCoins(10f);
             userRepository.save(user);
         }
 
-        return new LoginResponseDTO(token);
+        return new LoginResponseDTO(
+            user.getId(),
+            user.getName(),
+            user.getEmail(),
+            user.getCreatedAt().toString(),
+            user.getLastRewardedLogin().toString(),
+            user.getCoins(),
+            token
+        );
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -1,0 +1,84 @@
+[{
+  "_id": {
+    "$oid": "681d5c53e82a0d3f43e82aa7"
+  },
+  "name": "meuTime",
+  "user_id": {
+    "$oid": "681d5c53e82a0d3f43e82aa6"
+  },
+  "professional_players": [
+    {
+      "player_id": {
+        "$oid": "680acf0634c3c8745fb7e37b"
+      },
+      "is_starter": true
+    },
+    {
+      "player_id": {
+        "$oid": "680acf1734c3c8745fb7e37d"
+      },
+      "is_starter": true
+    },
+    {
+      "player_id": {
+        "$oid": "680acf0e34c3c8745fb7e37c"
+      },
+      "is_starter": true
+    },
+    {
+      "player_id": {
+        "$oid": "680acf1f34c3c8745fb7e37e"
+      },
+      "is_starter": true
+    },
+    {
+      "player_id": {
+        "$oid": "680acf2834c3c8745fb7e37f"
+      },
+      "is_starter": true
+    }
+  ],
+  "_class": "com.nexusfc.api.Model.UserTeam"
+},
+{
+  "_id": {
+    "$oid": "681d5c66e82a0d3f43e82aa9"
+  },
+  "name": "UserTeam681d5ce82aa8",
+  "user_id": {
+    "$oid": "681d5c66e82a0d3f43e82aa8"
+  },
+  "professional_players": [
+    {
+      "player_id": {
+        "$oid": "680acf4c34c3c8745fb7e382"
+      },
+      "is_starter": true
+    },
+    {
+      "player_id": {
+        "$oid": "680acf4434c3c8745fb7e381"
+      },
+      "is_starter": true
+    },
+    {
+      "player_id": {
+        "$oid": "680acf5d34c3c8745fb7e384"
+      },
+      "is_starter": true
+    },
+    {
+      "player_id": {
+        "$oid": "680acf6634c3c8745fb7e385"
+      },
+      "is_starter": true
+    },
+    {
+      "player_id": {
+        "$oid": "680acf7e34c3c8745fb7e386"
+      },
+      "is_starter": true
+    }
+  ],
+  "_class": "com.nexusfc.api.Model.UserTeam"
+}]

@@ -1,0 +1,80 @@
+[{
+  "_id": {
+    "$oid": "67fe61e66264fd6e0bd861e0"
+  },
+  "region": "Korea",
+  "league": "LCK",
+  "name": "BNK FEARX"
+},
+{
+  "_id": {
+    "$oid": "67fe61e66264fd6e0bd861e1"
+  },
+  "region": "Korea",
+  "league": "LCK",
+  "name": "DN Freecs"
+},
+{
+  "_id": {
+    "$oid": "67fe61e66264fd6e0bd861e2"
+  },
+  "region": "Korea",
+  "league": "LCK",
+  "name": "Dplus KIA"
+},
+{
+  "_id": {
+    "$oid": "67fe61e66264fd6e0bd861e3"
+  },
+  "region": "Korea",
+  "league": "LCK",
+  "name": "DRX"
+},
+{
+  "_id": {
+    "$oid": "67fe61e66264fd6e0bd861e4"
+  },
+  "region": "Korea",
+  "league": "LCK",
+  "name": "Gen.G"
+},
+{
+  "_id": {
+    "$oid": "67fe61e66264fd6e0bd861e5"
+  },
+  "region": "Korea",
+  "league": "LCK",
+  "name": "Hanwha Life Esports"
+},
+{
+  "_id": {
+    "$oid": "67fe61e66264fd6e0bd861e6"
+  },
+  "region": "Korea",
+  "league": "LCK",
+  "name": "KT Rolster"
+},
+{
+  "_id": {
+    "$oid": "67fe61e66264fd6e0bd861e7"
+  },
+  "region": "Korea",
+  "league": "LCK",
+  "name": "Nongshim RedForce"
+},
+{
+  "_id": {
+    "$oid": "67fe61e66264fd6e0bd861e8"
+  },
+  "region": "Korea",
+  "league": "LCK",
+  "name": "OKSavingsBank BRION"
+},
+{
+  "_id": {
+    "$oid": "67fe61e66264fd6e0bd861e9"
+  },
+  "region": "Korea",
+  "league": "LCK",
+  "name": "T1"
+}]
