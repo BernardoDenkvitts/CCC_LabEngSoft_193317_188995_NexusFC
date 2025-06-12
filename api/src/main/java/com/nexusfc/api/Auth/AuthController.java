@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.Instant;
 
 @RestController
 @RequestMapping("/auth")
@@ -44,7 +45,7 @@ public class AuthController {
             newUser.getName(),
             newUser.getEmail(),
             newUser.getCreatedAt().toString(),
-            newUser.getLastRewardedLogin() != null ? newUser.getLastRewardedLogin().toString() : Instant.now(),
+            newUser.getLastRewardedLogin() != null ? newUser.getLastRewardedLogin().toString() : Instant.now().toString(),
             newUser.getCoins(),
             token
         );

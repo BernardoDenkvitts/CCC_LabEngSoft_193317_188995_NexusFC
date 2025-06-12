@@ -18,8 +18,11 @@ public class ProfessionalPlayersService {
         this.playersRepository = playersRepository;
     }
 
-    public Page<ProfessionalPlayer> getProfessionalPlayers(Pageable pageable) {
-        return playersRepository.findAll(pageable);
+    public Page<ProfessionalPlayer> getProfessionalPlayersByLane(String lane, Pageable pageable) {
+        if (lane == null || lane.isBlank()) {
+            return playersRepository.findAll(pageable);
+        }
+        return playersRepository.findByLane(lane, pageable);
     }
 
     public ProfessionalPlayer getProfessionalPlayerById(String id) {

@@ -1,8 +1,10 @@
 import useAsyncFetch from '@/hooks/use-async-fetch';
 import useCurrentUser from '@/hooks/use-current-user';
 import {
+  Feather,
   FontAwesome,
   FontAwesome5,
+  FontAwesome6,
   Ionicons,
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
@@ -14,6 +16,7 @@ import {
   StyleSheet,
   ScrollView,
   ToastAndroid,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import UserService, { UserTeam } from '@/services/user';
@@ -21,19 +24,11 @@ import ProfessionalPlayersService, {
   ProfessionalPlayer,
 } from '@/services/professional-players';
 import { empty } from '@/constants';
-
-const mockTeam = {
-  name: 'ChurrascadosTeam',
-  players: [
-    { name: 'Robo', image: '' },
-    { name: 'Shini', image: '' },
-    { name: 'Mago', image: '' },
-    { name: 'Marvin', image: '' },
-    { name: 'Kuri', image: '' },
-  ],
-  patrimonio: 49.2,
-  pontos: 425.08,
-};
+import simulations, { Simulation } from '@/services/simulations';
+import professionalTeams from '@/services/professional-teams';
+import { ObjectId } from '@/utils/types/utils';
+import Button from '@/components/button';
+import { router } from 'expo-router';
 
 const teams = [
   { name: 'SKT TELECOM', image: '' },
@@ -47,12 +42,20 @@ const matchs = [
   { team1: 'GEN G ACADEMY', image1: '', team2: 'qualquer time', image2: '' },
 ];
 
+type Matches = {
+  simulationId: ObjectId;
+  win: boolean | null;
+  challengerTeamName: string;
+  challengedTeamName: string;
+};
+
 const logoLPL = require('../../assets/images/lpl-logo.png');
 
 const HomeScreen = () => {
   const [currentUser] = useCurrentUser();
   const [userTeam, setUserTeam] = useState<UserTeam | null>(null);
   const [loading, setLoading] = useState(false);
+  const [matches, setMatches] = useState<Matches[]>([]);
 
   const playersHeader = useMemo(() => {
     if (!userTeam) {
@@ -70,10 +73,78 @@ const HomeScreen = () => {
     });
   }, [userTeam]);
 
+  const { data: simulationsHistory = empty.array } = useAsyncFetch(
+    {
+      callback: async () => {
+        if (!currentUser) return;
+
+        return await simulations.history('681d5c53e82a0d3f43e82aa6');
+      },
+      errorMessage: 'Falha ao carregar o histórico de partidas.',
+    },
+    [currentUser],
+  );
+
+  useEffect(() => {
+    if (!currentUser?._id || simulationsHistory.length === 0) return;
+
+    const fetchTeam = async (id: string) => {
+      try {
+        const userTeam = await UserService.getTeam(id);
+        if (userTeam?.name) return userTeam.name;
+      } catch (e) {
+        console.log(e);
+      }
+
+      try {
+        const professionalTeam = await professionalTeams.find(id);
+        if (professionalTeam[0]?.name) return professionalTeam[0].name;
+      } catch (e) {
+        console.log(e);
+      }
+
+      return 'Time não encontrado';
+    };
+
+    const fetchTeamNames = async () => {
+      setLoading(true);
+
+      try {
+        const teamNameResults = await Promise.all(
+          simulationsHistory.map(async (simulation) => {
+            const [challengerTeamName, challengedTeamName] = await Promise.all([
+              fetchTeam(simulation.challengerId),
+              fetchTeam(simulation.challengedId),
+            ]);
+
+            return {
+              simulationId: simulation.id,
+              win: simulation.win,
+              challengerTeamName,
+              challengedTeamName,
+            };
+          }),
+        );
+
+        setMatches(teamNameResults);
+      } catch (e) {
+        console.log(e);
+        ToastAndroid.show(
+          'Falha ao carregar os nomes dos times.',
+          ToastAndroid.LONG,
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTeamNames();
+  }, [currentUser, simulationsHistory]);
+
   useEffect(() => {
     if (!currentUser?._id) return;
 
-    const fetchTeam = async () => {
+    const fetchHistory = async () => {
       setLoading(true);
 
       try {
@@ -87,8 +158,8 @@ const HomeScreen = () => {
       }
     };
 
-    fetchTeam();
-  }, [currentUser]);
+    fetchHistory();
+  }, [currentUser, setLoading]);
 
   return (
     <SafeAreaView
@@ -107,7 +178,7 @@ const HomeScreen = () => {
             style={{ borderWidth: 1, borderRadius: 12, borderColor: '#f0c420' }}
           >
             <View style={styles.inputWrapper}>
-              <Text style={styles.teamLabel}>{mockTeam.name}</Text>
+              <Text style={styles.teamLabel}>{userTeam?.name}</Text>
               <View style={styles.playersContainer}>
                 {playersHeader.length ? (
                   playersHeader.map((player, index) => {
@@ -119,7 +190,8 @@ const HomeScreen = () => {
                           style={styles.memberName}
                           textBreakStrategy="balanced"
                           numberOfLines={1}
-                          lineBreakMode="middle"
+                          adjustsFontSizeToFit
+                          lineBreakMode="tail"
                         >
                           {player.nick}
                         </Text>
@@ -127,17 +199,28 @@ const HomeScreen = () => {
                     );
                   })
                 ) : (
-                  <Text
+                  <TouchableOpacity
                     style={{
+                      flex: 1,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      margin: 10,
+                      borderRadius: 8,
                       backgroundColor: '#c49b3b',
-                      color: 'white',
-                      padding: 8,
-                      borderRadius: 4,
-                      fontSize: 16,
                     }}
+                    onPress={() => router.navigate('/(tabs)/escalacao')}
                   >
-                    Nenhum jogador cadastrado no time.
-                  </Text>
+                    <Text
+                      style={{
+                        color: 'white',
+                        padding: 8,
+                        fontSize: 16,
+                      }}
+                    >
+                      Nenhum jogador cadastrado no time.
+                    </Text>
+                    <Feather name="edit" size={28} color="white" />
+                  </TouchableOpacity>
                 )}
               </View>
               <View style={styles.statsContainer}>
@@ -246,9 +329,8 @@ const HomeScreen = () => {
               RODADA 1
             </Text>
           </View>
-          {matchs.map((match, index) => (
-            <View key={index} style={[styles.playerCard, { flex: 1 }]}>
-              {/* <Image source={player.image} style={styles.playerImage} /> */}
+          {/* {matches.map((match) => (
+            <View key={match.simulationId} style={[styles.playerCard]}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -259,31 +341,153 @@ const HomeScreen = () => {
               >
                 <View
                   style={{
-                    flex: 1,
+                    flex: 0.4,
                     flexDirection: 'row',
+                    backgroundColor: 'red',
+                    alignItems: 'center',
                     justifyContent: 'flex-start',
                   }}
                 >
-                  <FontAwesome5 name="user" size={25} color={'white'} />
-                  <Text style={[styles.playerName, { margin: 5 }]}>
-                    {match.team1}
+                  {match.win && (
+                    <FontAwesome6 name="medal" size={24} color="#C4932F" />
+                  )}
+                  <Text
+                    numberOfLines={1}
+                    lineBreakMode="tail"
+                    adjustsFontSizeToFit
+                    textBreakStrategy="balanced"
+                    style={[styles.playerName, { margin: 5, padding: 3 }]}
+                  >
+                    {match.challengerTeamName}
                   </Text>
                 </View>
 
-                <FontAwesome color="#C4932F" name="close" size={25} />
+                <View
+                  style={{
+                    flex: 0.2,
+                    alignItems: 'center',
+                    backgroundColor: 'green',
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="sword-cross"
+                    size={30}
+                    color="red"
+                  />
+                </View>
 
                 <View
                   style={{
-                    flex: 1,
+                    flex: 0.4,
+                    alignItems: 'center',
                     flexDirection: 'row',
                     justifyContent: 'flex-end',
                   }}
                 >
-                  <FontAwesome5 name="user" size={25} color={'white'} />
-                  <Text style={[styles.playerName, { margin: 5 }]}>
-                    {match.team2}
+                  <Text
+                    numberOfLines={1}
+                    lineBreakMode="tail"
+                    adjustsFontSizeToFit
+                    textBreakStrategy="balanced"
+                    style={[styles.playerName, { margin: 5, padding: 3 }]}
+                  >
+                    {match.challengedTeamName}
                   </Text>
+                  {!match.win && (
+                    <FontAwesome6 name="medal" size={24} color="#C4932F" />
+                  )}
                 </View>
+              </View>
+            </View>
+          ))} */}
+          {matches.map((match) => (
+            <View
+              key={match.simulationId}
+              style={[
+                styles.playerCard,
+                {
+                  marginBottom: 15,
+                  padding: 5,
+                  borderRadius: 10,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-evenly',
+                },
+              ]}
+            >
+              <View
+                style={{
+                  flex: 0.4,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                {match.win && (
+                  <FontAwesome6
+                    name="medal"
+                    size={20}
+                    color="white"
+                    style={{
+                      marginRight: 4,
+                    }}
+                  />
+                )}
+                <Text
+                  numberOfLines={1}
+                  lineBreakMode="tail"
+                  adjustsFontSizeToFit
+                  textBreakStrategy="balanced"
+                  style={[
+                    styles.playerName,
+                    {
+                      marginLeft: 5,
+                    },
+                  ]}
+                >
+                  {match.challengerTeamName}
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  flex: 0.2,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="sword-cross"
+                  size={26}
+                  color="red"
+                />
+              </View>
+
+              <View
+                style={{
+                  flex: 0.4,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                }}
+              >
+                <Text
+                  numberOfLines={1}
+                  lineBreakMode="tail"
+                  adjustsFontSizeToFit
+                  textBreakStrategy="balanced"
+                  style={[styles.playerName, { marginRight: 5 }]}
+                >
+                  {match.challengedTeamName}
+                </Text>
+                {!match.win && (
+                  <FontAwesome6
+                    name="medal"
+                    size={20}
+                    color="white"
+                    style={{ marginLeft: 4 }}
+                  />
+                )}
               </View>
             </View>
           ))}
@@ -390,8 +594,6 @@ const styles = StyleSheet.create({
   container: {
     paddingVertical: 20,
     paddingHorizontal: 10,
-
-    backgroundColor: '#white',
     flexGrow: 1,
     width: '100%',
   },
@@ -404,7 +606,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 4,
-    fontSize: 10,
+    fontSize: 11,
   },
   teamName: {
     color: '#fff',
@@ -453,8 +655,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     backgroundColor: '#0A131D',
     flexDirection: 'row',
-    // alignSelf: 'flex-end',
-    // justifyContent: 'space-around',
   },
   statBox: {
     alignItems: 'center',

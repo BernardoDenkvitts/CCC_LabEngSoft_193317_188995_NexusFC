@@ -11,8 +11,6 @@ class ProfessionalTeamsService {
   }
 
   async find(id: string | undefined) {
-    // const formatedFilter = deepSnakeCase(filters);
-
     const { data } = await apiRequest.get<ProfessionalTeam[]>(
       `${this.path}/${id}`,
     );

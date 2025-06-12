@@ -10,6 +10,15 @@ class SimulationsService {
     return data;
   }
 
+  async history(id: string | undefined): Promise<Simulation[]> {
+    const { data } = await apiRequest.get<Simulation[]>(
+      `${this.path}/history/${id}`,
+      { params: { size: 5, page: 0 } },
+    );
+
+    return data?.content;
+  }
+
   async find(id: string | undefined) {
     const { data } = await apiRequest.get<Simulation[]>(`${this.path}/${id}`);
 
@@ -18,14 +27,16 @@ class SimulationsService {
 }
 
 export type Simulation = {
-  _id: ObjectId;
-  versus_player: boolean;
-  desafiante_id: ObjectId;
-  desafiado_id: ObjectId;
   status: 'REQUESTED' | 'DENIED' | 'ACCEPTED';
-  bet_value: number;
-  created_at: string;
-  desafiante_team: ObjectId[];
+  betValue: number;
+  challengedId: ObjectId;
+  challengedTeam: ObjectId[];
+  challengerId: ObjectId;
+  challengerTeam: ObjectId[];
+  createdAt: string;
+  id: ObjectId;
+  versusPlayer: boolean;
+  win: boolean | null;
 };
 
 export default new SimulationsService();

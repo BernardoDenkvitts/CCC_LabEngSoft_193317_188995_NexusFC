@@ -48,6 +48,19 @@ class UserService {
 
     return data;
   }
+
+  async updateTeamName(
+    id: string | undefined,
+    newTeamName: string,
+  ): Promise<UserTeam> {
+    console.log('newTeamName', newTeamName);
+
+    const { data } = await apiRequest.patch<UserTeam>(
+      `${this.path_user}/${id}/team?newTeamName=${encodeURIComponent(newTeamName)}`,
+    );
+
+    return data;
+  }
 }
 
 export type UserCreate = {

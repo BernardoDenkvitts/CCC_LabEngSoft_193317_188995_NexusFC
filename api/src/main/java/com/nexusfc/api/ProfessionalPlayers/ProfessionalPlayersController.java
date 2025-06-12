@@ -23,15 +23,16 @@ public class ProfessionalPlayersController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProfessionalPlayer>> getPlayers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<ProfessionalPlayer>> getPlayers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String lane) {
         Pageable pageable = PageRequest.of(page, size);
-        
-        return ResponseEntity.ok(service.getProfessionalPlayers(pageable));
+        return ResponseEntity.ok(service.getProfessionalPlayersByLane(lane, pageable));
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<ProfessionalPlayer> getPlayerById(@RequestParam String id) {
         return ResponseEntity.ok(service.getProfessionalPlayerById(id));
     }
-
 }

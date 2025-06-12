@@ -4,15 +4,15 @@ import apiRequest from './api-request';
 class ProfessionalPlayersService {
   private path = 'professional/players';
 
-  async get() {
-    const { data } = await apiRequest.get<ProfessionalPlayer[]>(this.path);
+  async get(lane?: string): Promise<ProfessionalPlayer[]> {
+    const { data } = await apiRequest.get<ProfessionalPlayer[]>(this.path, {
+      params: { lane: lane },
+    });
 
-    return data;
+    return data?.content;
   }
 
   async find(id: string | undefined) {
-    // const formatedFilter = deepSnakeCase(filters);
-
     const { data } = await apiRequest.get<ProfessionalPlayer[]>(
       `${this.path}/${id}`,
     );
@@ -35,7 +35,7 @@ type MatchHistoryEntry = {
 };
 
 export type ProfessionalPlayer = {
-  _id: ObjectId;
+  id: ObjectId;
   nick: string;
   lane: 'TOP' | 'JUNGLE' | 'MID' | 'ADC' | 'SUPPORT';
   team: ObjectId;
