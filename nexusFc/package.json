@@ -19,6 +19,7 @@
     "@hookform/resolvers": "^5.0.1",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
+    "@stomp/stompjs": "^7.1.1",
     "@types/lodash": "^4.17.16",
     "axios": "^1.8.4",
     "expo": "~52.0.46",
@@ -47,6 +48,7 @@
     "react-native-svg": "^15.12.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
+    "sockjs-client": "^1.6.1",
     "yup": "^1.6.1",
     "yup-locale-pt": "^0.0.9"
   },

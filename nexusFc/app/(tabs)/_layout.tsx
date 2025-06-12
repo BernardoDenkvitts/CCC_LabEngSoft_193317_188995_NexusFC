@@ -1,13 +1,15 @@
-import { Tabs } from 'expo-router';
+import { router, Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
-
 import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { AntDesign, FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import {
+  FontAwesome5,
+  MaterialIcons,
+  SimpleLineIcons,
+} from '@expo/vector-icons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -21,7 +23,6 @@ export default function TabLayout() {
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
-            // Use a transparent background on iOS to show the blur effect
             position: 'absolute',
           },
           default: {},
@@ -38,6 +39,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="simulacao"
+        options={{
+          title: 'Simulações',
+          tabBarIcon: ({ color }) => (
+            <SimpleLineIcons name="game-controller" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="escalacao"
         options={{
           title: 'Escalação',
@@ -47,13 +57,19 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="logout"
         options={{
-          title: 'Perfil',
+          title: 'Sair',
           tabBarIcon: ({ color }) => (
-            <FontAwesome5 size={28} name="user" color={color} />
+            <MaterialIcons name="logout" size={24} color={color} />
           ),
         }}
+        listeners={() => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            router.replace('/(public)/login');
+          },
+        })}
       />
     </Tabs>
   );

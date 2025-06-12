@@ -47,6 +47,12 @@ class UserService {
     return data;
   }
 
+  async getAll(): Promise<ObjectId[]> {
+    const { data } = await apiRequest.get<ObjectId[]>(`${this.path_user}`);
+
+    return data;
+  }
+
   async updateTeamName(
     id: string | undefined,
     newTeamName: string,
@@ -54,6 +60,12 @@ class UserService {
     const { data } = await apiRequest.patch<UserTeam>(
       `${this.path_user}/${id}/team?newTeamName=${encodeURIComponent(newTeamName)}`,
     );
+
+    return data;
+  }
+
+  async getCurrentUser(id: string | undefined): Promise<User> {
+    const { data } = await apiRequest.get<User>(`${this.path_user}/${id}`);
 
     return data;
   }
@@ -82,7 +94,7 @@ type ProfessionalPlayerEntry = {
 };
 
 export type UserTeam = {
-  _id: ObjectId;
+  id: ObjectId;
   name: string;
   user_id: ObjectId;
   professionalPlayers: ProfessionalPlayerEntry[];

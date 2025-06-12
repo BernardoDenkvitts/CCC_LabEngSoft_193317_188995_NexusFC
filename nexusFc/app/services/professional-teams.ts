@@ -4,18 +4,23 @@ import apiRequest from './api-request';
 class ProfessionalTeamsService {
   private path = 'professional/teams';
 
-  async get() {
+  async get(): Promise<ProfessionalTeam[]> {
     const { data } = await apiRequest.get<ProfessionalTeam[]>(this.path);
 
-    return data;
+    return data?.content;
   }
 
   async find(id: string | undefined) {
-    const { data } = await apiRequest.get<ProfessionalTeam[]>(
-      `${this.path}/${id}`,
-    );
+    console.log('aaaaaaaaaaa', id);
+    const { data } = await apiRequest.get<ProfessionalTeam[]>(`${this.path}`, {
+      params: { id: id },
+    });
 
-    return data;
+    console.log('data', data);
+
+    return data?.content.filter((team) => {
+      return team.id === id;
+    });
   }
 }
 

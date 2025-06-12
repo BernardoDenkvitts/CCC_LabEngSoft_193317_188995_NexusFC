@@ -3,6 +3,8 @@ import ApiBase from './api-base';
 import { GlobalStore } from './stores';
 
 class ApiRequest extends ApiBase {
+  url = 'http://192.168.0.49:8080/';
+
   constructor() {
     super(
       axios.create({

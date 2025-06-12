@@ -2,7 +2,6 @@ import useAsyncFetch from '@/hooks/use-async-fetch';
 import useCurrentUser from '@/hooks/use-current-user';
 import {
   Feather,
-  FontAwesome5,
   FontAwesome6,
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
@@ -25,18 +24,8 @@ import professionalTeams from '@/services/professional-teams';
 import { ObjectId } from '@/utils/types/utils';
 import { router } from 'expo-router';
 import { sumBy } from 'lodash';
-
-const teams = [
-  { name: 'SKT TELECOM', image: '' },
-  { name: 'HUAWEI LIFE', image: '' },
-  { name: 'GEN G ACADEMY', image: '' },
-];
-
-const matchs = [
-  { team1: 'SKT TELECOM', image1: '', team2: 'qualquer time', image2: '' },
-  { team1: 'HUAWEI LIFE', image1: '', team2: 'qualquer time', image2: '' },
-  { team1: 'GEN G ACADEMY', image1: '', team2: 'qualquer time', image2: '' },
-];
+import user from '@/services/user';
+import { GlobalStore } from '@/services/stores';
 
 type Matches = {
   simulationId: ObjectId;
@@ -51,8 +40,9 @@ const HomeScreen = () => {
   const [currentUser] = useCurrentUser();
   const [userTeam, setUserTeam] = useState<UserTeam | null>(null);
   const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false); // Adicionado para pull-to-refresh
+  const [refreshing, setRefreshing] = useState(false);
   const [matches, setMatches] = useState<Matches[]>([]);
+  const [othersUsersTeam, setOthersUsersTeam] = useState<any[]>([]);
 
   const playersHeader = useMemo(() => {
     if (!userTeam) {
@@ -73,13 +63,23 @@ const HomeScreen = () => {
   const { data: simulationsHistory = empty.array } = useAsyncFetch(
     {
       callback: async () => {
-        if (!currentUser) return;
+        if (!currentUser || !userTeam) return;
 
-        return await simulations.history(userTeam?._id);
+        return await simulations.history(currentUser?._id || currentUser?.id);
       },
       errorMessage: 'Falha ao carregar o histórico de partidas.',
     },
     [currentUser, userTeam],
+  );
+
+  const { data: allUsers = empty.array } = useAsyncFetch(
+    {
+      callback: async () => {
+        return await user.getAll();
+      },
+      errorMessage: 'Falha ao carregar o histórico de partidas.',
+    },
+    [],
   );
 
   const winsCount = useMemo(() => {
@@ -102,6 +102,8 @@ const HomeScreen = () => {
 
         try {
           const professionalTeam = await professionalTeams.find(id);
+
+          console.log('professionaLTeam', professionalTeam);
           if (professionalTeam[0]?.name) return professionalTeam[0].name;
         } catch (e) {
           console.log(e);
@@ -112,6 +114,7 @@ const HomeScreen = () => {
 
       const teamNameResults = await Promise.all(
         simulationsHistory.map(async (simulation) => {
+          console.log('challenged', simulation.challengedId);
           const [challengerTeamName, challengedTeamName] = await Promise.all([
             fetchTeam(simulation.challengerId),
             fetchTeam(simulation.challengedId),
@@ -144,7 +147,9 @@ const HomeScreen = () => {
     setLoading(true);
 
     try {
-      const data = await UserService.getTeam(currentUser._id);
+      const data = await UserService.getTeam(
+        currentUser?.id || currentUser?._id,
+      );
       setUserTeam(data);
     } catch (e) {
       console.log(e);
@@ -154,16 +159,72 @@ const HomeScreen = () => {
     }
   }, [currentUser]);
 
+  const fetchOthersUserTeam = useCallback(async () => {
+    if (!allUsers.length) return;
+
+    setLoading(true);
+
+    try {
+      const getUserTeam = async (user_id: string) => {
+        return await UserService.getTeam(user_id);
+      };
+      const promises = allUsers.map((user) =>
+        user ? getUserTeam(user) : undefined,
+      );
+
+      const allTeams = await Promise.all(promises);
+
+      const othersTeams = allTeams.filter((team) => {
+        return team && userTeam?.id !== team.id && team.name;
+      });
+
+      setOthersUsersTeam(othersTeams);
+    } catch (e) {
+      console.log(e);
+      ToastAndroid.show('Falha ao carregar o time.', ToastAndroid.LONG);
+    } finally {
+      setLoading(false);
+    }
+  }, [allUsers, userTeam]);
+
+  const fetchCurrentUser = useCallback(async () => {
+    if (!currentUser) return;
+
+    setLoading(true);
+
+    try {
+      const usuarioAtual = await UserService.getCurrentUser(currentUser._id);
+
+      GlobalStore.set('user', usuarioAtual);
+    } catch (e) {
+      console.log(e);
+      ToastAndroid.show(
+        'Falha ao carregar o usuário atual.',
+        ToastAndroid.LONG,
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [currentUser]);
+
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await Promise.all([fetchUserTeam(), fetchTeamNames()]);
+    await Promise.all([
+      fetchUserTeam(),
+      fetchOthersUserTeam(),
+      fetchCurrentUser(),
+      fetchTeamNames(),
+    ]);
     setRefreshing(false);
-  }, [fetchUserTeam, fetchTeamNames]);
+  }, [fetchUserTeam, fetchTeamNames, fetchCurrentUser, fetchOthersUserTeam]);
 
   useEffect(() => {
-    console.log('userTeam', userTeam?.professionalPlayers);
-    console.log('PLAYERS', userTeam?.professionalPlayers.length);
+    console.log('OAOAOAOA', userTeam);
   }, [userTeam]);
+
+  useEffect(() => {
+    console.log('players', currentUser);
+  }, [currentUser]);
 
   return (
     <SafeAreaView
@@ -482,39 +543,74 @@ const HomeScreen = () => {
             borderRadius: 15,
           }}
         >
-          <Text style={{ color: '#C4932F', fontSize: 28 }}>Melhores Times</Text>
-          {teams.map((team, index) => (
-            <View
-              key={index}
-              style={[
-                styles.cardTimes,
-                {
-                  flex: 1,
-                  flexDirection: 'row',
-                },
-              ]}
+          <View
+            style={{
+              alignItems: 'flex-start',
+              marginBottom: 10,
+              flex: 1,
+            }}
+          >
+            <Text
+              style={{
+                color: 'white',
+                fontSize: 18,
+                padding: 6,
+                borderLeftWidth: 2,
+                borderBottomWidth: 2,
+                borderColor: '#f0c420',
+              }}
             >
-              {/* <Image source={player.image} style={styles.playerImage} /> */}
-              <Text
-                style={{
-                  color: 'white',
-                  fontSize: 16,
-                  padding: 5,
-                  marginRight: 20,
-                }}
-              >
-                {index + 1}
-              </Text>
+              Outras Equipes
+            </Text>
+          </View>
+          {othersUsersTeam.length ? (
+            othersUsersTeam.map((team, index) => (
               <View
-                style={{ flexDirection: 'row', flex: 1, alignItems: 'center' }}
+                key={index}
+                style={[
+                  styles.cardTimes,
+                  {
+                    flex: 1,
+                    flexDirection: 'row',
+                  },
+                ]}
               >
-                <FontAwesome5 name="user" size={25} color={'white'} />
-                <Text style={[styles.playerName, { margin: 5 }]}>
-                  {team.name}
+                {/* <Image source={player.image} style={styles.playerImage} /> */}
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: 18,
+                    padding: 5,
+                    marginRight: 20,
+                  }}
+                >
+                  {index + 1}
                 </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    flex: 1,
+                    alignItems: 'center',
+                  }}
+                >
+                  <Text
+                    style={[
+                      styles.playerName,
+                      { margin: 5, fontSize: 18, fontWeight: 'normal' },
+                    ]}
+                  >
+                    {team.name}
+                  </Text>
+                </View>
               </View>
+            ))
+          ) : (
+            <View style={{ alignItems: 'center', marginTop: 15, padding: 5 }}>
+              <Text style={{ color: 'white', fontSize: 18 }}>
+                Não há outros jogadores no torneio
+              </Text>
             </View>
-          ))}
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

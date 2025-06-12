@@ -5,12 +5,13 @@ import useAsyncFetch from '@/hooks/use-async-fetch';
 import useCurrentUser from '@/hooks/use-current-user';
 import market from '@/services/market';
 import professionalPlayers from '@/services/professional-players';
+import UserService, { UserTeam } from '@/services/user';
 import user from '@/services/user';
 import useForm from '@/utils/use-form';
 import Yup from '@/utils/yup';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { ScrollView, ToastAndroid, TouchableOpacity } from 'react-native';
 import { View, Text } from 'react-native';
@@ -118,6 +119,8 @@ const renderItem = (item: ItemDropdownType) => {
 const Escalacao = () => {
   const [currentUser] = useCurrentUser();
   const form = useForm({ validationSchema });
+  const [userTeam, setUserTeam] = useState<UserTeam | null>(null);
+
   const players = form.watch('players');
 
   const { data: topLanersList = empty.array, loading: loadingTop } =
@@ -215,6 +218,7 @@ const Escalacao = () => {
   );
 
   const onSubmit = useCallback(async () => {
+    if (!currentUser?._id) return;
     const values = form.getValues();
 
     try {
@@ -222,7 +226,13 @@ const Escalacao = () => {
         return await market.buy(playerId, currentUser?._id);
       };
 
-      await user.updateTeamName(currentUser?._id, values.teamName);
+      const sellPlayer = async (playerId: string) => {
+        return await market.sell(playerId, currentUser?._id);
+      };
+
+      if (values.teamName) {
+        await user.updateTeamName(currentUser?._id, values.teamName);
+      }
 
       const hasAtLeastOnePlayer = Object.values(values.players).some(
         (value) => !!value,
@@ -235,12 +245,17 @@ const Escalacao = () => {
         );
         return;
       }
+      for (const player of userTeam?.professionalPlayers) {
+        if (player.player.id) {
+          await sellPlayer(player.player.id);
+        }
+      }
 
-      const promises = Object.values(values.players).map((player) =>
-        player.id ? buyPlayer(player.id) : Promise.resolve(),
-      );
-
-      await Promise.all(promises);
+      for (const player of Object.values(values.players)) {
+        if (player?.id) {
+          await buyPlayer(player.id);
+        }
+      }
 
       ToastAndroid.show('Time criado com sucesso!', ToastAndroid.CENTER);
     } catch (error) {
@@ -250,7 +265,7 @@ const Escalacao = () => {
         ToastAndroid.CENTER,
       );
     }
-  }, [form, currentUser]);
+  }, [form, currentUser, userTeam]);
 
   const patrimonio = useMemo(() => {
     const hasAtLeastOneValue = Object.values(players).some((value) => !!value);
@@ -263,6 +278,22 @@ const Escalacao = () => {
 
     return playerCosts.toFixed(2);
   }, [players.adc, players.jg, players.top, players.mid, players.supp]);
+
+  const fetchUserTeam = useCallback(async () => {
+    if (!currentUser?._id) return;
+
+    try {
+      const data = await UserService.getTeam(currentUser._id);
+      setUserTeam(data);
+    } catch (e) {
+      console.log(e);
+      ToastAndroid.show('Falha ao carregar o time.', ToastAndroid.LONG);
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    fetchUserTeam();
+  }, []);
 
   return (
     <AutocompleteDropdownContextProvider headerOffset={-6}>
