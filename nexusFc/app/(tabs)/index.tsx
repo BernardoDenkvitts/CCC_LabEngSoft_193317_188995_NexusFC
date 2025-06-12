@@ -2,13 +2,11 @@ import useAsyncFetch from '@/hooks/use-async-fetch';
 import useCurrentUser from '@/hooks/use-current-user';
 import {
   Feather,
-  FontAwesome,
   FontAwesome5,
   FontAwesome6,
-  Ionicons,
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -17,18 +15,16 @@ import {
   ScrollView,
   ToastAndroid,
   TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import UserService, { UserTeam } from '@/services/user';
-import ProfessionalPlayersService, {
-  ProfessionalPlayer,
-} from '@/services/professional-players';
 import { empty } from '@/constants';
-import simulations, { Simulation } from '@/services/simulations';
+import simulations from '@/services/simulations';
 import professionalTeams from '@/services/professional-teams';
 import { ObjectId } from '@/utils/types/utils';
-import Button from '@/components/button';
 import { router } from 'expo-router';
+import { sumBy } from 'lodash';
 
 const teams = [
   { name: 'SKT TELECOM', image: '' },
@@ -55,6 +51,7 @@ const HomeScreen = () => {
   const [currentUser] = useCurrentUser();
   const [userTeam, setUserTeam] = useState<UserTeam | null>(null);
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false); // Adicionado para pull-to-refresh
   const [matches, setMatches] = useState<Matches[]>([]);
 
   const playersHeader = useMemo(() => {
@@ -78,95 +75,107 @@ const HomeScreen = () => {
       callback: async () => {
         if (!currentUser) return;
 
-        return await simulations.history('681d5c53e82a0d3f43e82aa6');
+        return await simulations.history(userTeam?._id);
       },
       errorMessage: 'Falha ao carregar o histórico de partidas.',
     },
-    [currentUser],
+    [currentUser, userTeam],
   );
 
-  useEffect(() => {
-    if (!currentUser?._id || simulationsHistory.length === 0) return;
+  const winsCount = useMemo(() => {
+    if (!simulationsHistory.length) return;
 
-    const fetchTeam = async (id: string) => {
-      try {
-        const userTeam = await UserService.getTeam(id);
-        if (userTeam?.name) return userTeam.name;
-      } catch (e) {
-        console.log(e);
-      }
+    return sumBy(simulationsHistory, 'win');
+  }, [simulationsHistory]);
 
-      try {
-        const professionalTeam = await professionalTeams.find(id);
-        if (professionalTeam[0]?.name) return professionalTeam[0].name;
-      } catch (e) {
-        console.log(e);
-      }
+  const fetchTeamNames = useCallback(async () => {
+    setLoading(true);
 
-      return 'Time não encontrado';
-    };
+    try {
+      const fetchTeam = async (id: string) => {
+        try {
+          const userTeam = await UserService.getTeam(id);
+          if (userTeam?.name) return userTeam.name;
+        } catch (e) {
+          console.log(e);
+        }
 
-    const fetchTeamNames = async () => {
-      setLoading(true);
+        try {
+          const professionalTeam = await professionalTeams.find(id);
+          if (professionalTeam[0]?.name) return professionalTeam[0].name;
+        } catch (e) {
+          console.log(e);
+        }
 
-      try {
-        const teamNameResults = await Promise.all(
-          simulationsHistory.map(async (simulation) => {
-            const [challengerTeamName, challengedTeamName] = await Promise.all([
-              fetchTeam(simulation.challengerId),
-              fetchTeam(simulation.challengedId),
-            ]);
+        return 'Time não encontrado';
+      };
 
-            return {
-              simulationId: simulation.id,
-              win: simulation.win,
-              challengerTeamName,
-              challengedTeamName,
-            };
-          }),
-        );
+      const teamNameResults = await Promise.all(
+        simulationsHistory.map(async (simulation) => {
+          const [challengerTeamName, challengedTeamName] = await Promise.all([
+            fetchTeam(simulation.challengerId),
+            fetchTeam(simulation.challengedId),
+          ]);
 
-        setMatches(teamNameResults);
-      } catch (e) {
-        console.log(e);
-        ToastAndroid.show(
-          'Falha ao carregar os nomes dos times.',
-          ToastAndroid.LONG,
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+          return {
+            simulationId: simulation.id,
+            win: simulation.win,
+            challengerTeamName,
+            challengedTeamName,
+          };
+        }),
+      );
 
-    fetchTeamNames();
-  }, [currentUser, simulationsHistory]);
+      setMatches(teamNameResults);
+    } catch (e) {
+      console.log(e);
+      ToastAndroid.show(
+        'Falha ao carregar os nomes dos times.',
+        ToastAndroid.LONG,
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [simulationsHistory]);
 
-  useEffect(() => {
+  const fetchUserTeam = useCallback(async () => {
     if (!currentUser?._id) return;
 
-    const fetchHistory = async () => {
-      setLoading(true);
+    setLoading(true);
 
-      try {
-        const data = await UserService.getTeam(currentUser._id);
-        setUserTeam(data);
-      } catch (e) {
-        console.log(e);
-        ToastAndroid.show('Falha ao carregar o time.', ToastAndroid.LONG);
-      } finally {
-        setLoading(false);
-      }
-    };
+    try {
+      const data = await UserService.getTeam(currentUser._id);
+      setUserTeam(data);
+    } catch (e) {
+      console.log(e);
+      ToastAndroid.show('Falha ao carregar o time.', ToastAndroid.LONG);
+    } finally {
+      setLoading(false);
+    }
+  }, [currentUser]);
 
-    fetchHistory();
-  }, [currentUser, setLoading]);
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await Promise.all([fetchUserTeam(), fetchTeamNames()]);
+    setRefreshing(false);
+  }, [fetchUserTeam, fetchTeamNames]);
+
+  useEffect(() => {
+    console.log('userTeam', userTeam?.professionalPlayers);
+    console.log('PLAYERS', userTeam?.professionalPlayers.length);
+  }, [userTeam]);
 
   return (
     <SafeAreaView
       edges={['bottom', 'left', 'right', 'top']}
       style={{ flex: 1, backgroundColor: '#0A131D' }}
     >
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View
           style={{
             paddingHorizontal: 5,
@@ -184,8 +193,10 @@ const HomeScreen = () => {
                   playersHeader.map((player, index) => {
                     return (
                       <View key={index} style={styles.playerCard}>
-                        <FontAwesome5 name="user" size={40} color={'white'} />
-                        {/* <Image source={player.player.ima} style={styles.playerImage} /> */}
+                        <Image
+                          source={{ uri: player.image }}
+                          style={styles.playerImage}
+                        />
                         <Text
                           style={styles.memberName}
                           textBreakStrategy="balanced"
@@ -241,7 +252,7 @@ const HomeScreen = () => {
                     color="#f0c420"
                   />
                   <Text style={styles.statValue}>
-                    {userTeam?.pontos || 0 + '/' + 0}
+                    {winsCount || 0}/{simulationsHistory.length}
                   </Text>
                 </View>
               </View>
@@ -329,34 +340,51 @@ const HomeScreen = () => {
               RODADA 1
             </Text>
           </View>
-          {/* {matches.map((match) => (
-            <View key={match.simulationId} style={[styles.playerCard]}>
+          {matches.length ? (
+            matches.map((match) => (
               <View
-                style={{
-                  flexDirection: 'row',
-                  width: '100%',
-                  alignItems: 'center',
-                  justifyContent: 'space-evenly',
-                }}
+                key={match.simulationId}
+                style={[
+                  styles.playerCard,
+                  {
+                    marginBottom: 15,
+                    padding: 5,
+                    borderRadius: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-evenly',
+                  },
+                ]}
               >
                 <View
                   style={{
                     flex: 0.4,
                     flexDirection: 'row',
-                    backgroundColor: 'red',
                     alignItems: 'center',
-                    justifyContent: 'flex-start',
+                    justifyContent: 'flex-end',
                   }}
                 >
                   {match.win && (
-                    <FontAwesome6 name="medal" size={24} color="#C4932F" />
+                    <FontAwesome6
+                      name="medal"
+                      size={20}
+                      color="white"
+                      style={{
+                        marginRight: 4,
+                      }}
+                    />
                   )}
                   <Text
                     numberOfLines={1}
                     lineBreakMode="tail"
                     adjustsFontSizeToFit
                     textBreakStrategy="balanced"
-                    style={[styles.playerName, { margin: 5, padding: 3 }]}
+                    style={[
+                      styles.playerName,
+                      {
+                        marginLeft: 5,
+                      },
+                    ]}
                   >
                     {match.challengerTeamName}
                   </Text>
@@ -366,12 +394,12 @@ const HomeScreen = () => {
                   style={{
                     flex: 0.2,
                     alignItems: 'center',
-                    backgroundColor: 'green',
+                    justifyContent: 'center',
                   }}
                 >
                   <MaterialCommunityIcons
                     name="sword-cross"
-                    size={30}
+                    size={26}
                     color="red"
                   />
                 </View>
@@ -379,9 +407,9 @@ const HomeScreen = () => {
                 <View
                   style={{
                     flex: 0.4,
-                    alignItems: 'center',
                     flexDirection: 'row',
-                    justifyContent: 'flex-end',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
                   }}
                 >
                   <Text
@@ -389,108 +417,28 @@ const HomeScreen = () => {
                     lineBreakMode="tail"
                     adjustsFontSizeToFit
                     textBreakStrategy="balanced"
-                    style={[styles.playerName, { margin: 5, padding: 3 }]}
+                    style={[styles.playerName, { marginRight: 5 }]}
                   >
                     {match.challengedTeamName}
                   </Text>
                   {!match.win && (
-                    <FontAwesome6 name="medal" size={24} color="#C4932F" />
+                    <FontAwesome6
+                      name="medal"
+                      size={20}
+                      color="white"
+                      style={{ marginLeft: 4 }}
+                    />
                   )}
                 </View>
               </View>
+            ))
+          ) : (
+            <View style={{ alignItems: 'center', marginTop: 15, padding: 5 }}>
+              <Text style={{ color: 'white', fontSize: 18 }}>
+                Não há partidas jogadas ainda
+              </Text>
             </View>
-          ))} */}
-          {matches.map((match) => (
-            <View
-              key={match.simulationId}
-              style={[
-                styles.playerCard,
-                {
-                  marginBottom: 15,
-                  padding: 5,
-                  borderRadius: 10,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-evenly',
-                },
-              ]}
-            >
-              <View
-                style={{
-                  flex: 0.4,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'flex-end',
-                }}
-              >
-                {match.win && (
-                  <FontAwesome6
-                    name="medal"
-                    size={20}
-                    color="white"
-                    style={{
-                      marginRight: 4,
-                    }}
-                  />
-                )}
-                <Text
-                  numberOfLines={1}
-                  lineBreakMode="tail"
-                  adjustsFontSizeToFit
-                  textBreakStrategy="balanced"
-                  style={[
-                    styles.playerName,
-                    {
-                      marginLeft: 5,
-                    },
-                  ]}
-                >
-                  {match.challengerTeamName}
-                </Text>
-              </View>
-
-              <View
-                style={{
-                  flex: 0.2,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <MaterialCommunityIcons
-                  name="sword-cross"
-                  size={26}
-                  color="red"
-                />
-              </View>
-
-              <View
-                style={{
-                  flex: 0.4,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                }}
-              >
-                <Text
-                  numberOfLines={1}
-                  lineBreakMode="tail"
-                  adjustsFontSizeToFit
-                  textBreakStrategy="balanced"
-                  style={[styles.playerName, { marginRight: 5 }]}
-                >
-                  {match.challengedTeamName}
-                </Text>
-                {!match.win && (
-                  <FontAwesome6
-                    name="medal"
-                    size={20}
-                    color="white"
-                    style={{ marginLeft: 4 }}
-                  />
-                )}
-              </View>
-            </View>
-          ))}
+          )}
         </View>
 
         <View
@@ -636,8 +584,9 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   playerImage: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
+    marginBottom: 8,
     borderRadius: 30,
     backgroundColor: '#222',
   },

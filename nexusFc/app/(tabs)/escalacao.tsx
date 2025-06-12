@@ -1,5 +1,4 @@
 import CustomAutocompleteDropdown from '@/components/auto-complete-dropdown';
-import Button from '@/components/button';
 import FormInput from '@/components/form-input';
 import { empty } from '@/constants';
 import useAsyncFetch from '@/hooks/use-async-fetch';
@@ -11,13 +10,11 @@ import useForm from '@/utils/use-form';
 import Yup from '@/utils/yup';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
-import { sumBy } from 'lodash';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { ScrollView, ToastAndroid, TouchableOpacity } from 'react-native';
-import { View, StyleSheet, Text, Image } from 'react-native';
+import { View, Text } from 'react-native';
 import {
-  AutocompleteDropdown,
   AutocompleteDropdownContextProvider,
   AutocompleteDropdownItem,
 } from 'react-native-autocomplete-dropdown';
@@ -225,13 +222,25 @@ const Escalacao = () => {
         return await market.buy(playerId, currentUser?._id);
       };
 
+      await user.updateTeamName(currentUser?._id, values.teamName);
+
+      const hasAtLeastOnePlayer = Object.values(values.players).some(
+        (value) => !!value,
+      );
+
+      if (!hasAtLeastOnePlayer) {
+        ToastAndroid.show(
+          'Nome do time atualizado com sucesso!',
+          ToastAndroid.CENTER,
+        );
+        return;
+      }
+
       const promises = Object.values(values.players).map((player) =>
         player.id ? buyPlayer(player.id) : Promise.resolve(),
       );
 
-      // await Promise.all(promises);
-
-      await user.updateTeamName(currentUser?._id, values.teamName);
+      await Promise.all(promises);
 
       ToastAndroid.show('Time criado com sucesso!', ToastAndroid.CENTER);
     } catch (error) {
@@ -244,14 +253,15 @@ const Escalacao = () => {
   }, [form, currentUser]);
 
   const patrimonio = useMemo(() => {
-    console.log('players', players);
     const hasAtLeastOneValue = Object.values(players).some((value) => !!value);
 
     if (!hasAtLeastOneValue) return;
 
-    return Object.values(players).reduce((total, player) => {
+    const playerCosts = Object.values(players).reduce((total, player) => {
       return total + (player.coins || 0);
     }, 0);
+
+    return playerCosts.toFixed(2);
   }, [players.adc, players.jg, players.top, players.mid, players.supp]);
 
   return (

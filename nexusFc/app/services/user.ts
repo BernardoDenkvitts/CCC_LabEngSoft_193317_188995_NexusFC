@@ -1,8 +1,6 @@
 import { ObjectId } from '@/utils/types/utils';
 import apiRequest from './api-request';
-import professionalPlayers, {
-  ProfessionalPlayer,
-} from './professional-players';
+import { ProfessionalPlayer } from './professional-players';
 
 class UserService {
   private path_authentication = 'auth';
@@ -53,8 +51,6 @@ class UserService {
     id: string | undefined,
     newTeamName: string,
   ): Promise<UserTeam> {
-    console.log('newTeamName', newTeamName);
-
     const { data } = await apiRequest.patch<UserTeam>(
       `${this.path_user}/${id}/team?newTeamName=${encodeURIComponent(newTeamName)}`,
     );
